@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Com Flow — In-Store Media</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;background:#F4F6FA;color:#1a1a2e;min-height:100vh}
+:root{--dark:#1F3864;--blue:#2E75B6;--green:#375623;--alt:#D6E4F0;--warn:#FFF2CC;--warn-text:#7F6000;--border:#E2E6EF;--surface:#fff;--muted:#6B7280;--sidebar:220px}
+
+/* Layout */
+.shell{display:flex;height:100vh;overflow:hidden}
+.sidebar{width:var(--sidebar);background:var(--dark);display:flex;flex-direction:column;flex-shrink:0}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.content{flex:1;overflow-y:auto;padding:24px}
+
+/* Sidebar */
+.sb-brand{padding:20px 16px 16px;border-bottom:1px solid rgba(255,255,255,.1)}
+.sb-ism{font-size:10px;font-weight:600;color:rgba(255,255,255,.5);letter-spacing:.1em;margin-bottom:4px}
+.sb-name{font-size:15px;font-weight:600;color:#fff}
+.sb-section{padding:16px 16px 6px;font-size:10px;font-weight:600;color:rgba(255,255,255,.4);letter-spacing:.08em}
+.sb-item{display:flex;align-items:center;gap:10px;padding:9px 16px;font-size:13px;color:rgba(255,255,255,.65);cursor:pointer;transition:all .15s;border-left:2px solid transparent}
+.sb-item:hover{background:rgba(255,255,255,.07);color:#fff}
+.sb-item.active{background:rgba(255,255,255,.12);color:#fff;border-left-color:#fff}
+.sb-item svg{width:16px;height:16px;flex-shrink:0}
+.sb-file{padding:12px 16px;border-top:1px solid rgba(255,255,255,.1);margin-top:auto}
+.sb-file-label{font-size:10px;color:rgba(255,255,255,.4);margin-bottom:3px}
+.sb-file-name{font-size:12px;color:rgba(255,255,255,.7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* Topbar */
+.tb-title{font-size:16px;font-weight:600;color:var(--dark)}
+.tb-sub{font-size:12px;color:var(--muted);margin-top:1px}
+.btn-upload{display:flex;align-items:center;gap:6px;padding:8px 16px;background:var(--dark);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;transition:opacity .15s}
+.btn-upload:hover{opacity:.9}
+.btn-upload svg{width:15px;height:15px}
+
+/* Upload area */
+.upload-area{border:2px dashed var(--border);border-radius:12px;padding:48px 32px;text-align:center;cursor:pointer;transition:all .2s;background:var(--surface)}
+.upload-area:hover,.upload-area.drag{border-color:var(--blue);background:#F0F6FF}
+.upload-icon{width:48px;height:48px;background:var(--alt);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.upload-icon svg{width:24px;height:24px;color:var(--blue)}
+.upload-title{font-size:16px;font-weight:600;color:var(--dark);margin-bottom:6px}
+.upload-sub{font-size:13px;color:var(--muted)}
+#fileInput{display:none}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:24px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.stat-label{font-size:11px;font-weight:500;color:var(--muted);margin-bottom:6px;letter-spacing:.04em}
+.stat-val{font-size:28px;font-weight:700;color:var(--dark)}
+.stat-hint{font-size:11px;color:var(--muted);margin-top:3px}
+
+/* Table */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.card-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.card-title{font-size:14px;font-weight:600;color:var(--dark)}
+.search-box{padding:6px 12px;border:1px solid var(--border);border-radius:6px;font-size:13px;color:#1a1a2e;width:220px;outline:none}
+.search-box:focus{border-color:var(--blue)}
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:#F8FAFC;padding:9px 14px;text-align:left;font-weight:600;font-size:11px;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:9px 14px;border-bottom:1px solid var(--border);color:#1a1a2e;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#F8FAFC}
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600}
+.b-eco{background:#EAF3DE;color:#375623}
+.b-ok{background:#E8F5E9;color:#2E7D32}
+
+/* Specs */
+.specs-controls{display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.specs-summary{font-size:12px;color:var(--muted);margin-bottom:16px}
+.btn-secondary{padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--dark);font-size:13px;font-weight:500;cursor:pointer}
+.btn-secondary:hover{border-color:var(--blue);background:#F8FAFC}
+.specs-select{padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:var(--surface);color:#1a1a2e;min-width:280px;outline:none;cursor:pointer}
+.specs-select:focus{border-color:var(--blue)}
+.specs-table-wrap{overflow-x:auto}
+.specs-table{width:100%;border-collapse:collapse;font-size:12px}
+.specs-table th{padding:9px 12px;text-align:left;font-size:11px;font-weight:600;border-bottom:1px solid var(--border);white-space:nowrap}
+.specs-table th.h-dark{background:var(--dark);color:#fff}
+.specs-table th.h-blue{background:var(--blue);color:#fff}
+.specs-table th.h-green{background:var(--green);color:#fff}
+.specs-table td{padding:9px 12px;border-bottom:1px solid var(--border);color:#1a1a2e}
+.specs-table tr:last-child td{border-bottom:none}
+.specs-table tr:nth-child(even) td{background:#F8FAFC}
+.specs-table tr:hover td{background:var(--alt)}
+.deadline-cell{background:var(--warn);color:var(--warn-text);font-weight:600;font-size:11px;text-align:center;vertical-align:middle}
+
+/* Borrador */
+.borrador-layout{display:block;max-width:860px}
+.borrador-panel{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.bp-header{padding:14px 18px;border-bottom:1px solid var(--border);background:#F8FAFC}
+.bp-title{font-size:14px;font-weight:600;color:var(--dark)}
+.bp-body{padding:18px}
+.field-label{font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.05em;margin-bottom:6px}
+.field-val{font-size:13px;color:#1a1a2e;line-height:1.6;background:#F8FAFC;border:1px solid var(--border);border-radius:8px;padding:12px 14px;white-space:pre-wrap;min-height:60px}
+.field-val.body-field{min-height:260px;font-size:12px}
+.deadline-badge{background:var(--warn);color:var(--warn-text);border-radius:8px;padding:12px 16px;margin-bottom:16px}
+.dl-label{font-size:10px;font-weight:700;letter-spacing:.06em;margin-bottom:3px}
+.dl-date{font-size:20px;font-weight:700}
+.btn-copy{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:9px;background:var(--dark);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;margin-top:14px;transition:opacity .15s}
+.btn-copy:hover{opacity:.9}
+.btn-copy svg{width:15px;height:15px}
+.placeholder-msg{padding:40px;text-align:center;color:var(--muted);font-size:13px}
+
+/* Tabs */
+.tabs{display:flex;gap:0;margin-bottom:20px;border-bottom:1px solid var(--border)}
+.tab{padding:10px 20px;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tab.active{color:var(--dark);border-bottom-color:var(--dark)}
+.tab:hover:not(.active){color:#1a1a2e}
+
+/* Toast */
+.toast{position:fixed;bottom:24px;right:24px;background:#1a1a2e;color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999}
+.toast.show{opacity:1}
+
+/* Empty */
+.empty{padding:60px;text-align:center}
+.empty-icon{width:56px;height:56px;background:var(--alt);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.empty-icon svg{width:26px;height:26px;color:var(--blue)}
+.empty-title{font-size:15px;font-weight:600;color:var(--dark);margin-bottom:6px}
+.empty-sub{font-size:13px;color:var(--muted)}
+
+/* Loading */
+.loading{display:flex;align-items:center;gap:10px;padding:40px;justify-content:center;color:var(--muted);font-size:13px}
+.spinner{width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* Filtros operativos */
+.global-filters{display:none;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:20px;gap:14px;align-items:flex-end;flex-wrap:wrap}
+.gf-group{display:flex;flex-direction:column;gap:6px}
+.gf-label{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.06em}
+.gf-select{padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:#fff;color:#1a1a2e;min-width:230px;outline:none}
+.gf-select:focus{border-color:var(--blue)}
+.view-toggle{display:flex;background:#F8FAFC;border:1px solid var(--border);border-radius:9px;padding:3px}
+.toggle-btn{border:0;background:transparent;padding:7px 12px;border-radius:7px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer}
+.toggle-btn.active{background:var(--dark);color:#fff}
+.mode-hint{font-size:11px;color:var(--muted);line-height:1.35;max-width:360px}
+.period-chip{display:inline-block;background:#EEF2FF;color:var(--dark);border:1px solid #D8DEEA;border-radius:999px;padding:2px 8px;font-size:10px;font-weight:700;white-space:nowrap}
+.sem{display:inline-block;border-radius:999px;padding:3px 8px;font-size:10px;font-weight:700;white-space:nowrap}
+.sem-green{background:#E8F5E9;color:#2E7D32}
+.sem-yellow{background:#FFF2CC;color:#7F6000}
+.sem-red{background:#FDECEC;color:#B91C1C}
+.sem-gray{background:#F3F4F6;color:#6B7280}
+
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sb-brand">
+      <div class="sb-ism">IN-STORE MEDIA</div>
+      <div class="sb-name">Com Flow</div>
+    </div>
+    <div class="sb-section">MÓDULOS</div>
+    <div class="sb-item active" onclick="setView('dashboard')">
+      <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Dashboard
+    </div>
+    <div class="sb-item" onclick="setView('ecommerce')">
+      <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      Ecommerce
+    </div>
+    <div class="sb-item" onclick="setView('specs')">
+      <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      Specs clientes
+    </div>
+    <div class="sb-item" onclick="setView('borrador')">
+      <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M4 9h16M8 4v5"/></svg>
+      Borradores
+    </div>
+    <div class="sb-file">
+      <div class="sb-file-label">ARCHIVO CARGADO</div>
+      <div class="sb-file-name" id="sbFileName">— ninguno —</div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div>
+        <div class="tb-title" id="topTitle">Dashboard</div>
+        <div class="tb-sub" id="topSub">Carga un archivo de campañas para comenzar</div>
+      </div>
+      <button class="btn-upload" onclick="document.getElementById('fileInput').click()">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Cargar archivo
+      </button>
+      <input type="file" id="fileInput" accept=".xlsx,.xls,.xlsm" onchange="handleFile(event)">
+    </div>
+
+    <div class="content" id="mainContent">
+      <div class="global-filters" id="globalFilters">
+        <div class="gf-group">
+          <div class="gf-label">VISTA</div>
+          <div class="view-toggle">
+            <button class="toggle-btn active" id="btnModeConsolidated" onclick="setMode('consolidated')">Consolidado</button>
+            <button class="toggle-btn" id="btnModeWeekly" onclick="setMode('weekly')">Semanal</button>
+          </div>
+        </div>
+        <div class="gf-group">
+          <div class="gf-label">PERIODO</div>
+          <select class="gf-select" id="periodSelect" onchange="setPeriodFilter(this.value)">
+            <option value="all">Todos los periodos</option>
+          </select>
+        </div>
+        <div class="gf-group">
+          <div class="gf-label">CRITERIO OPERATIVO</div>
+          <select class="gf-select" id="actionFilter" onchange="setActionFilter(this.value)">
+            <option value="all">Todo lo aplicable</option>
+            <option value="active">Campañas activas</option>
+            <option value="starts">Campañas que inician</option>
+            <option value="ends">Campañas que terminan</option>
+            <option value="deadline">Deadline en periodo</option>
+          </select>
+        </div>
+        <div class="mode-hint" id="modeHint">Vista consolidada: une campañas que aparecen en varios periodos para evitar repetir creatividades.</div>
+      </div>
+      <!-- Dashboard default -->
+      <div id="view-dashboard">
+        <div class="upload-area" onclick="document.getElementById('fileInput').click()"
+             ondragover="event.preventDefault();this.classList.add('drag')"
+             ondragleave="this.classList.remove('drag')"
+             ondrop="handleDrop(event)">
+          <div class="upload-icon">
+            <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          </div>
+          <div class="upload-title">Arrastra o selecciona tu archivo de campañas</div>
+          <div class="upload-sub">Formatos aceptados: .xlsx · .xls · .xlsm</div>
+        </div>
+        <div id="dashStats" style="display:none;margin-top:24px">
+          <div class="stats">
+            <div class="stat-card"><div class="stat-label">CLIENTES</div><div class="stat-val" id="s-cli">0</div></div>
+            <div class="stat-card"><div class="stat-label">ANUNCIANTES / MARCAS</div><div class="stat-val" id="s-anu">0</div></div>
+            <div class="stat-card"><div class="stat-label">CAMPAÑAS</div><div class="stat-val" id="s-camp">0</div></div>
+            <div class="stat-card"><div class="stat-label">CREATIVIDADES</div><div class="stat-val" id="s-creat">0</div></div>
+            <div class="stat-card"><div class="stat-label">DUPLICADOS ELIMINADOS</div><div class="stat-val" id="s-dup">0</div><div class="stat-hint">por llave compuesta de 8 campos</div></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">Clientes y marcas en este ciclo</div></div>
+            <div class="tbl-wrap"><table>
+              <thead><tr><th>Periodo(s)</th><th>Cliente</th><th>Anunciante / Marca</th><th>Campaña</th><th>Creatividades</th><th>Fecha inicio</th><th>Fecha fin</th><th>Fecha límite entrega</th><th>Semáforo</th></tr></thead>
+              <tbody id="dashTable"></tbody>
+            </table></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ecommerce -->
+      <div id="view-ecommerce" style="display:none">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Registros Ecommerce procesados</div>
+            <input class="search-box" placeholder="Buscar cliente, anunciante o marca, artículo..." oninput="filterEco(this.value)" id="ecoSearch">
+          </div>
+          <div class="tbl-wrap"><table>
+            <thead><tr>
+              <th>Periodo(s)</th><th>Cliente</th><th>Anunciante / Marca</th><th>Campaña</th><th>Artículo</th><th>Nivel</th>
+              <th>Fijación</th><th>Retirada</th><th>Deadline</th><th>Semáforo</th><th>Desktop</th><th>Mobile</th><th>App 1</th><th>App 2</th>
+            </tr></thead>
+            <tbody id="ecoTable"></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- Specs -->
+      <div id="view-specs" style="display:none">
+        <div class="specs-controls">
+          <select class="specs-select" id="specsSelect" onchange="renderSpecs()">
+            <option value="">Vista general: todas las campañas filtradas</option>
+          </select>
+          <button class="btn-secondary" onclick="clearSpecsSelection()">Limpiar selección</button>
+        </div>
+        <div class="specs-summary" id="specsSummary">Carga un archivo para consultar las specs.</div>
+        <div class="card">
+          <div class="card-header"><div class="card-title" id="specsTitle">Specs del cliente</div></div>
+          <div class="specs-table-wrap"><table class="specs-table">
+            <thead>
+              <tr>
+                <th class="h-dark">Cliente</th>
+                <th class="h-dark">Anunciante / Marca</th>
+                <th class="h-dark">Campaña</th>
+                <th class="h-dark">Artículo</th>
+                <th class="h-dark">Nivel</th>
+                <th class="h-dark">Periodo(s)</th>
+                <th class="h-blue">Fecha límite</th>
+                <th class="h-blue">Fijación</th>
+                <th class="h-blue">Retirada</th>
+                <th class="h-green">Desktop</th>
+                <th class="h-green">Mobile</th>
+                <th class="h-green">App 1</th>
+                <th class="h-green">App 2</th>
+              </tr>
+            </thead>
+            <tbody id="specsTable"></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- Borrador -->
+      <div id="view-borrador" style="display:none">
+        <div style="margin-bottom:16px;display:flex;align-items:center;gap:12px">
+          <select class="specs-select" id="borradorSelect" onchange="renderBorrador()" style="min-width:300px">
+            <option value="">— Selecciona cliente + anunciante o marca + campaña —</option>
+          </select>
+        </div>
+        <div class="borrador-panel" style="max-width:860px">
+            <div class="bp-header"><div class="bp-title">Borrador de correo</div></div>
+            <div class="bp-body" id="borradorContent">
+              <div class="placeholder-msg">Selecciona cliente, anunciante o marca y campaña para generar el borrador</div>
+            </div>
+          </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const MESES_ES = ['','enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const MESES_CAP = ['','ENERO','FEBRERO','MARZO','ABRIL','MAYO','JUNIO','JULIO','AGOSTO','SEPTIEMBRE','OCTUBRE','NOVIEMBRE','DICIEMBRE'];
+
+const ECO_ARTS = new Set(['BUNDLE BOOST','CATEGORY BANNER','CATEGORY LANDING','CATEGORY MEDIA_WEB','HOME BANNER','HOME CENTRAL','HOME SLIDER','MIS LISTAS HEADER','PACK PROMOS','SEARCH BANNER']);
+
+const MEDIDAS = {
+  'BUNDLE BOOST':      {D:'240x410',  M:'430x281', A1:'254x380', A2:''},
+  'CATEGORY BANNER':   {D:'1920x259', M:'640x242', A1:'375x213', A2:'320x93'},
+  'CATEGORY LANDING':  {D:'1920x640', M:'640x612', A1:'375x213', A2:''},
+  'CATEGORY MEDIA_WEB':{D:'1920x260', M:'640x243', A1:'578x186', A2:''},
+  'HOME BANNER':       {D:'1920x344', M:'640x242', A1:'289x93',  A2:''},
+  'HOME CENTRAL':      {D:'1920x260', M:'640x243', A1:'578x187', A2:''},
+  'HOME SLIDER':       {D:'1920x640', M:'640x520', A1:'640x520', A2:''},
+  'MIS LISTAS HEADER': {D:'1920x259', M:'640x242', A1:'578x186', A2:''},
+  'PACK PROMOS':       {D:'1920x259', M:'640x242', A1:'578x186', A2:''},
+  'SEARCH BANNER':     {D:'1920x259', M:'640x242', A1:'320x93',  A2:''},
+};
+
+let weeklyRecords = [];
+let consolidatedRecords = [];
+let processed = []; // Vista activa filtrada, para mantener compatibilidad con buscadores.
+let periodCatalog = [];
+let fileName = '';
+let currentView = 'dashboard';
+let currentMode = 'consolidated';
+let selectedPeriod = 'all';
+let actionFilter = 'all';
+let rawEcoCount = 0;
+const NEXT_FRIDAY_KEY = '__NEXT_FRIDAY__';
+
+
+function esc(v){
+  return String(v ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+}
+
+function normDate(d){
+  if(!d || isNaN(d)) return null;
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+}
+
+function parseDMY(s){
+  const m = String(s||'').trim().match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})$/);
+  if(!m) return null;
+  let y = Number(m[3]); if(y < 100) y += 2000;
+  return normDate(new Date(y, Number(m[2])-1, Number(m[1])));
+}
+
+function toDate(val) {
+  if (!val) return null;
+  if (val instanceof Date) return normDate(val);
+  if (typeof val === 'number') {
+    if (window.XLSX && XLSX.SSF && XLSX.SSF.parse_date_code) {
+      const p = XLSX.SSF.parse_date_code(val);
+      if (p) return normDate(new Date(p.y, p.m-1, p.d));
+    }
+    return normDate(new Date(Math.round((val - 25569)*86400*1000)));
+  }
+  const dmy = parseDMY(val);
+  if(dmy) return dmy;
+  const d = new Date(val);
+  return isNaN(d) ? null : normDate(d);
+}
+
+function fmtDate(val) {
+  const d = toDate(val);
+  if (!d) return '';
+  return String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + d.getFullYear();
+}
+
+function parsePeriodo(val){
+  const raw = String(val || '').trim();
+  if(!raw) return null;
+  const m = raw.match(/^\s*([A-Za-z]?\d+)\s*-\s*(\d{1,2}\/\d{1,2}\/\d{2,4})\s*a\s*(\d{1,2}\/\d{1,2}\/\d{2,4})\s*$/i);
+  if(!m) return {code: raw, label: raw, start:null, end:null, key: raw};
+  const code = m[1].toUpperCase();
+  const start = parseDMY(m[2]);
+  const end = parseDMY(m[3]);
+  const label = `${code} - ${fmtDate(start)} a ${fmtDate(end)}`;
+  return {code, label, start, end, key: `${code}|${fmtDate(start)}|${fmtDate(end)}`};
+}
+
+function calcDeadline(minFij) {
+  const start = toDate(minFij);
+  if(!start) return null;
+  const hoy = new Date(); hoy.setHours(0,0,0,0);
+  const diff = Math.round((start - hoy) / 86400000);
+  let fl;
+  if (diff >= 11)     fl = new Date(start.getTime() - 10*86400000);
+  else if (diff >= 6) fl = new Date(start.getTime() -  5*86400000);
+  else if (diff >= 3) fl = new Date(start.getTime() -  2*86400000);
+  else if (diff >= 2) fl = new Date(start.getTime() -  1*86400000);
+  else fl = hoy;
+  return normDate(fl);
+}
+
+function fmtDeadline(d) {
+  d = toDate(d);
+  if(!d) return '—';
+  return d.getDate() + ' de ' + MESES_ES[d.getMonth()+1] + ' de ' + d.getFullYear();
+}
+
+function dateInRange(d, start, end){
+  d = toDate(d); start = toDate(start); end = toDate(end);
+  return !!(d && start && end && d >= start && d <= end);
+}
+function overlaps(aStart, aEnd, bStart, bEnd){
+  aStart = toDate(aStart); aEnd = toDate(aEnd); bStart = toDate(bStart); bEnd = toDate(bEnd);
+  return !!(aStart && aEnd && bStart && bEnd && aStart <= bEnd && aEnd >= bStart);
+}
+
+function recordBaseKey(r){
+  return [r.cliente,r.anunciante,r.campana,r.articulo,r.cid,r.nivel,r.cdesc].map(v=>String(v||'').trim().toUpperCase()).join('|');
+}
+
+function getPeriodoByKey(k){ return periodCatalog.find(p => p.key === k) || null; }
+
+function periodText(r){
+  if(r.periods && r.periods.length) return r.periods.map(p=>p.code).join(', ');
+  if(r.periodCode) return r.periodCode;
+  return '—';
+}
+function periodChipHtml(r){ return `<span class="period-chip">${esc(periodText(r))}</span>`; }
+
+function semaforo(deadline, end){
+  const hoy = new Date(); hoy.setHours(0,0,0,0);
+  const dl = toDate(deadline);
+  const e = toDate(end);
+  if(e && e < hoy) return {txt:'Finalizada', cls:'sem-gray'};
+  if(!dl) return {txt:'Sin fecha', cls:'sem-gray'};
+  const diff = Math.round((dl - hoy)/86400000);
+  if(diff <= 0) return {txt: diff < 0 ? 'Vencida' : 'Vence hoy', cls:'sem-red'};
+  if(diff <= 2) return {txt:'Prioridad', cls:'sem-yellow'};
+  return {txt:'En margen', cls:'sem-green'};
+}
+function semaforoHtml(r){
+  const s = semaforo(r.deadline, r.end || r.ret);
+  return `<span class="sem ${s.cls}">${s.txt}</span>`;
+}
+
+function setView(v) {
+  ['dashboard','ecommerce','specs','borrador'].forEach(id => {
+    document.getElementById('view-'+id).style.display = id===v ? '' : 'none';
+    document.querySelectorAll('.sb-item').forEach((el,i) => {
+      const views = ['dashboard','ecommerce','specs','borrador'];
+      el.classList.toggle('active', views[i]===v);
+    });
+  });
+  const titles = {dashboard:'Dashboard',ecommerce:'Ecommerce',specs:'Specs clientes',borrador:'Borradores'};
+  document.getElementById('topTitle').textContent = titles[v];
+  currentView = v;
+}
+
+function setMode(mode){
+  currentMode = mode;
+  document.getElementById('btnModeConsolidated').classList.toggle('active', mode==='consolidated');
+  document.getElementById('btnModeWeekly').classList.toggle('active', mode==='weekly');
+  document.getElementById('modeHint').textContent = mode === 'consolidated'
+    ? 'Vista consolidada: une campañas que aparecen en varios periodos para evitar repetir creatividades.'
+    : 'Vista semanal: conserva cada periodo del archivo para operar por semana sin perder trazabilidad.';
+  refreshAll();
+}
+function setPeriodFilter(v){ selectedPeriod = v; refreshAll(); }
+function setActionFilter(v){ actionFilter = v; refreshAll(); }
+
+function handleDrop(e) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag');
+  const file = e.dataTransfer.files[0];
+  if (file) processFile(file);
+}
+
+function handleFile(e) {
+  const file = e.target.files[0];
+  if (file) processFile(file);
+  e.target.value = '';
+}
+
+
+function getUpcomingFriday(){
+  const d = new Date(); d.setHours(0,0,0,0);
+  const day = d.getDay(); // 0 domingo, 5 viernes
+  const daysUntilFriday = (5 - day + 7) % 7;
+  d.setDate(d.getDate() + daysUntilFriday);
+  return normDate(d);
+}
+
+function sameDate(a,b){
+  a = toDate(a); b = toDate(b);
+  return !!(a && b && a.getTime() === b.getTime());
+}
+
+function getSelectedPeriodRange(){
+  if(selectedPeriod === 'all') return null;
+  if(selectedPeriod === NEXT_FRIDAY_KEY){
+    const f = getUpcomingFriday();
+    return {key:NEXT_FRIDAY_KEY, code:'PRÓXIMO VIERNES', label:`Próximo viernes - ${fmtDate(f)}`, start:f, end:f, isNextFriday:true};
+  }
+  return getPeriodoByKey(selectedPeriod);
+}
+
+function recordMatchesSelectedPeriod(r, period, mode){
+  if(!period) return true;
+  if(period.isNextFriday){
+    const startsNextFriday = (p) => sameDate(p && p.start, period.start);
+    if(mode === 'weekly') return sameDate(r.start || r.fij, period.start) || startsNextFriday({start:r.start});
+    return (r.periods || []).some(startsNextFriday);
+  }
+  if(mode === 'weekly') return r.periodKey === selectedPeriod;
+  return (r.periods || []).some(p => p.key === selectedPeriod) || overlaps(r.start, r.end, period.start, period.end);
+}
+
+function getFilteredRecords(mode=currentMode){
+  let base = mode === 'weekly' ? [...weeklyRecords] : [...consolidatedRecords];
+  const period = getSelectedPeriodRange();
+  if(period){
+    base = base.filter(r => recordMatchesSelectedPeriod(r, period, mode));
+
+    if(actionFilter === 'starts') base = base.filter(r => dateInRange(r.start, period.start, period.end));
+    if(actionFilter === 'ends') base = base.filter(r => dateInRange(r.end, period.start, period.end));
+    if(actionFilter === 'deadline') base = base.filter(r => dateInRange(r.deadline, period.start, period.end));
+    if(actionFilter === 'active') base = base.filter(r => overlaps(r.start, r.end, period.start, period.end));
+  }
+  return base;
+}
+
+function getFilteredConsolidatedRecords(){
+  return getFilteredRecords('consolidated');
+}
+
+function processFile(file) {
+  fileName = file.name;
+  document.getElementById('sbFileName').textContent = fileName;
+  document.getElementById('topSub').textContent = 'Procesando...';
+
+  const reader = new FileReader();
+  reader.onload = e => {
+    const wb = XLSX.read(e.target.result, {type:'array', cellDates:true});
+    const ws = wb.Sheets[wb.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(ws, {defval:''});
+
+    const colMap = {};
+    if (rows.length > 0) Object.keys(rows[0]).forEach(k => { colMap[k.trim()] = k; });
+    const get = (row, name) => {
+      const k = colMap[name];
+      return k !== undefined ? row[k] : '';
+    };
+
+    rawEcoCount = 0;
+    const seenWeekly = new Set();
+    const weekly = [];
+    const periodsMap = new Map();
+
+    rows.forEach(row => {
+      const art = String(get(row,'Artículo')||'').trim().toUpperCase();
+      if (!ECO_ARTS.has(art)) return;
+      rawEcoCount++;
+
+      const periodo = parsePeriodo(get(row,'Periodo')) || {code:'SIN PERIODO',label:'Sin periodo',start:toDate(get(row,'Fecha Fijación')),end:toDate(get(row,'Fecha Retirada')),key:'SIN_PERIODO'};
+      if(!periodsMap.has(periodo.key)) periodsMap.set(periodo.key, periodo);
+
+      const m = MEDIDAS[art] || {D:'',M:'',A1:'',A2:''};
+      const fij = toDate(get(row,'Fecha Fijación')) || periodo.start;
+      const ret = toDate(get(row,'Fecha Retirada')) || periodo.end;
+      const rec = {
+        cliente:   String(get(row,'Cliente')||'').trim(),
+        anunciante:String(get(row,'Anunciante')||'').trim(),
+        campana:   String(get(row,'Campaña')||'').trim(),
+        articulo:  String(get(row,'Artículo')||'').trim(),
+        nivel:     String(get(row,'Creativitad Título')||get(row,'Creatividad Título')||'').trim(),
+        cid:       String(get(row,'Creatividad Id')||'').trim(),
+        cdesc:     String(get(row,'Creatividad Desc.')||'').trim(),
+        estado:    String(get(row,'Creatividad Estado')||'').trim(),
+        fij, ret,
+        start: periodo.start || fij,
+        end: periodo.end || ret,
+        periodCode: periodo.code,
+        periodLabel: periodo.label,
+        periodKey: periodo.key,
+        desktop:   m.D, mobile: m.M, app1: m.A1, app2: m.A2,
+      };
+      rec.groupKey = recordBaseKey(rec);
+      rec.deadline = calcDeadline(rec.start || rec.fij);
+
+      const weeklyKey = rec.groupKey + '|' + rec.periodKey;
+      if(seenWeekly.has(weeklyKey)) return;
+      seenWeekly.add(weeklyKey);
+      weekly.push(rec);
+    });
+
+    periodCatalog = [...periodsMap.values()].sort((a,b) => {
+      if(a.start && b.start) return a.start - b.start;
+      return String(a.code).localeCompare(String(b.code), 'es', {numeric:true});
+    });
+
+    const conMap = new Map();
+    weekly.forEach(r => {
+      if(!conMap.has(r.groupKey)) {
+        conMap.set(r.groupKey, {
+          ...r,
+          start: r.start || r.fij,
+          end: r.end || r.ret,
+          periods: [],
+          periodKeys: new Set(),
+          sourceRows: 0
+        });
+      }
+      const c = conMap.get(r.groupKey);
+      c.sourceRows++;
+      const rs = r.start || r.fij;
+      const re = r.end || r.ret;
+      if(rs && (!c.start || rs < c.start)) c.start = rs;
+      if(re && (!c.end || re > c.end)) c.end = re;
+      if(r.periodKey && !c.periodKeys.has(r.periodKey)) {
+        c.periodKeys.add(r.periodKey);
+        c.periods.push({key:r.periodKey, code:r.periodCode, label:r.periodLabel, start:r.start, end:r.end});
+      }
+    });
+
+    consolidatedRecords = [...conMap.values()].map(c => {
+      c.periods.sort((a,b) => (a.start && b.start) ? a.start-b.start : String(a.code).localeCompare(String(b.code),'es',{numeric:true}));
+      c.periodKeys = [...c.periodKeys];
+      c.deadline = calcDeadline(c.start);
+      return c;
+    }).sort(sortRecords);
+
+    const conByKey = new Map(consolidatedRecords.map(c => [c.groupKey, c]));
+    weeklyRecords = weekly.map(w => {
+      const c = conByKey.get(w.groupKey);
+      return {...w, start:c?.start || w.start, end:c?.end || w.end, deadline:c?.deadline || w.deadline, periods:c?.periods || [{key:w.periodKey,code:w.periodCode,label:w.periodLabel,start:w.start,end:w.end}]};
+    }).sort(sortRecords);
+
+    buildPeriodSelect();
+    document.getElementById('globalFilters').style.display = 'flex';
+    document.getElementById('dashStats').style.display = '';
+    refreshAll();
+    showToast('✓ Archivo procesado — ' + consolidatedRecords.length + ' registros consolidados · ' + weeklyRecords.length + ' registros semanales');
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function sortRecords(a,b){
+  const pa = (a.periods && a.periods[0]?.start) || a.start || a.fij || new Date(9999,0,1);
+  const pb = (b.periods && b.periods[0]?.start) || b.start || b.fij || new Date(9999,0,1);
+  if(pa - pb) return pa - pb;
+  if (a.anunciante < b.anunciante) return -1;
+  if (a.anunciante > b.anunciante) return 1;
+  return String(a.campana).localeCompare(String(b.campana), 'es', {numeric:true});
+}
+
+function buildPeriodSelect(){
+  const sel = document.getElementById('periodSelect');
+  const nextFriday = getUpcomingFriday();
+  const nextFridayLabel = `Próximo viernes (${fmtDate(nextFriday)})`;
+  const hasNextFridayPeriod = periodCatalog.some(p => sameDate(p.start, nextFriday));
+  sel.innerHTML = '<option value="all">Todos los periodos</option>' +
+    `<option value="${NEXT_FRIDAY_KEY}">${nextFridayLabel}</option>` +
+    periodCatalog.map(p => `<option value="${esc(p.key)}">${esc(p.label)}</option>`).join('');
+  selectedPeriod = hasNextFridayPeriod ? NEXT_FRIDAY_KEY : 'all';
+  actionFilter = 'all';
+  sel.value = selectedPeriod;
+  document.getElementById('actionFilter').value = 'all';
+}
+
+function refreshAll(){
+  processed = getFilteredRecords(currentMode);
+  renderStatsAndDashboard(processed);
+  renderEcoTable(processed);
+  populateCampaignSelects();
+  renderSpecs();
+  renderBorrador();
+}
+
+function renderStatsAndDashboard(data){
+  const clientes = new Set(data.map(r=>r.cliente));
+  const anus = new Set(data.map(r=>r.anunciante));
+  const camps = new Set(data.map(r=>r.cliente+'|'+r.anunciante+'|'+r.campana));
+  document.getElementById('s-cli').textContent = clientes.size;
+  document.getElementById('s-anu').textContent = anus.size;
+  document.getElementById('s-camp').textContent = camps.size;
+  document.getElementById('s-creat').textContent = data.length;
+  document.getElementById('s-dup').textContent = currentMode === 'weekly' ? Math.max(0, rawEcoCount - weeklyRecords.length) : Math.max(0, rawEcoCount - consolidatedRecords.length);
+
+  const mesesSet = new Set();
+  data.forEach(r => { const d = r.start || r.fij; if (d) mesesSet.add(d.getMonth()+1); });
+  const headerMeses = [...mesesSet].sort((a,b)=>a-b).map(m=>MESES_CAP[m]).join(' Y ') || 'SIN PERIODO';
+  const modeText = currentMode === 'weekly' ? 'vista semanal' : 'vista consolidada';
+  document.getElementById('topSub').textContent = `${headerMeses} · ${data.length} registros · ${modeText}`;
+
+  const grupos = new Map();
+  data.forEach(r => {
+    const k = (currentMode==='weekly' ? r.periodKey+'|' : '') + r.cliente+'|'+r.anunciante+'|'+r.campana;
+    if (!grupos.has(k)) grupos.set(k, {periods:new Map(), anunciante:r.anunciante, campana:r.campana, cliente:r.cliente, count:0, start:null, end:null, deadline:null});
+    const g = grupos.get(k);
+    g.count++;
+    (r.periods || [{key:r.periodKey, code:r.periodCode, label:r.periodLabel, start:r.start, end:r.end}]).forEach(p => { if(p.key && !g.periods.has(p.key)) g.periods.set(p.key,p); });
+    if (r.start && (!g.start || r.start < g.start)) g.start = r.start;
+    if (r.end && (!g.end || r.end > g.end)) g.end = r.end;
+    if (r.deadline && (!g.deadline || r.deadline < g.deadline)) g.deadline = r.deadline;
+  });
+
+  const dashTbody = document.getElementById('dashTable');
+  dashTbody.innerHTML = '';
+  [...grupos.values()].sort((a,b)=>(a.start||0)-(b.start||0)).forEach(g => {
+    const periods = [...g.periods.values()].sort((a,b)=>(a.start||0)-(b.start||0)).map(p=>p.code).join(', ') || '—';
+    const sem = semaforo(g.deadline, g.end);
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td><span class="period-chip">${esc(periods)}</span></td><td>${esc(g.cliente)}</td><td>${esc(g.anunciante)}</td><td>#${esc(g.campana)}</td><td>${g.count}</td><td>${fmtDate(g.start)}</td><td>${fmtDate(g.end)}</td><td><span style="background:var(--warn);color:var(--warn-text);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:600">${fmtDeadline(g.deadline)}</span></td><td><span class="sem ${sem.cls}">${sem.txt}</span></td>`;
+    dashTbody.appendChild(tr);
+  });
+}
+
+function renderEcoTable(data) {
+  const tbody = document.getElementById('ecoTable');
+  if(!data.length){ tbody.innerHTML = '<tr><td colspan="14" style="text-align:center;color:var(--muted);padding:28px">No hay registros con el filtro seleccionado.</td></tr>'; return; }
+  tbody.innerHTML = data.map(r => `<tr>
+    <td>${periodChipHtml(r)}</td><td>${esc(r.cliente)}</td><td>${esc(r.anunciante)}</td><td>#${esc(r.campana)}</td><td>${esc(r.articulo)}</td><td>${esc(r.nivel)}</td>
+    <td>${fmtDate(r.start || r.fij)}</td><td>${fmtDate(r.end || r.ret)}</td><td>${fmtDeadline(r.deadline)}</td><td>${semaforoHtml(r)}</td>
+    <td>${esc(r.desktop)}</td><td>${esc(r.mobile)}</td><td>${esc(r.app1)}</td><td>${esc(r.app2||'—')}</td>
+  </tr>`).join('');
+}
+
+function filterEco(q) {
+  const f = q.toLowerCase();
+  const base = getFilteredRecords(currentMode);
+  const filtered = f ? base.filter(r =>
+    String(r.cliente).toLowerCase().includes(f) ||
+    r.anunciante.toLowerCase().includes(f) ||
+    String(r.campana).toLowerCase().includes(f) ||
+    r.articulo.toLowerCase().includes(f) ||
+    r.nivel.toLowerCase().includes(f) ||
+    periodText(r).toLowerCase().includes(f)
+  ) : base;
+  renderEcoTable(filtered);
+}
+
+function populateCampaignSelects(){
+  const rows = getFilteredConsolidatedRecords();
+  const grupos = new Map();
+  rows.forEach(r => {
+    const k = r.cliente+'|||'+r.anunciante+'|||'+r.campana;
+    if(!grupos.has(k)) grupos.set(k, {cliente:r.cliente, anunciante:r.anunciante,campana:r.campana,start:r.start});
+  });
+  const opts = [...grupos.values()].sort((a,b)=>(a.start||0)-(b.start||0)).map(g => `<option value="${esc(g.cliente)}|||${esc(g.anunciante)}|||${esc(g.campana)}">${esc(g.cliente)} | ${esc(g.anunciante)} | #${esc(g.campana)}</option>`).join('');
+  const specsEl = document.getElementById('specsSelect');
+  const specsCurr = specsEl.value;
+  specsEl.innerHTML = '<option value="">Vista general: todas las campañas filtradas</option>' + opts;
+  if([...specsEl.options].some(o=>o.value===specsCurr)) specsEl.value = specsCurr;
+
+  const borradorEl = document.getElementById('borradorSelect');
+  const borradorCurr = borradorEl.value;
+  borradorEl.innerHTML = '<option value="">— Selecciona cliente + anunciante o marca + campaña —</option>' + opts;
+  if([...borradorEl.options].some(o=>o.value===borradorCurr)) borradorEl.value = borradorCurr;
+}
+
+function clearSpecsSelection(){
+  const el = document.getElementById('specsSelect');
+  if(el){ el.value = ''; renderSpecs(); }
+}
+
+function renderSpecs() {
+  const val = document.getElementById('specsSelect').value;
+  const baseRows = getFilteredConsolidatedRecords();
+  let rows = baseRows;
+  let title = 'Specs clientes — vista general';
+  let summary = '';
+  let selected = false;
+
+  if (val) {
+    const [cli, anu, camp] = val.split('|||');
+    rows = baseRows.filter(r => r.cliente === cli && r.anunciante === anu && r.campana === camp);
+    title = `Specs — ${cli} | ${anu} | #${camp}`;
+    selected = true;
+    summary = `Mostrando specs para ${cli} | ${anu} | #${camp}.`;
+  } else {
+    const clients = new Set(rows.map(r => r.cliente)).size;
+    const brands = new Set(rows.map(r => r.anunciante)).size;
+    const campaigns = new Set(rows.map(r => r.cliente+'|'+r.anunciante+'|'+r.campana)).size;
+    summary = `Vista general: ${clients} cliente(s), ${brands} anunciante(s) / marca(s), ${campaigns} campaña(s) y ${rows.length} creatividad(es), de acuerdo con los filtros globales activos.`;
+  }
+
+  document.getElementById('specsTitle').textContent = title;
+  document.getElementById('specsSummary').textContent = summary;
+
+  const tbody = document.getElementById('specsTable');
+  if (!rows.length) {
+    tbody.innerHTML = '<tr><td colspan="13" style="text-align:center;color:var(--muted);padding:28px">No hay specs que coincidan con los filtros seleccionados.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = rows.map((r,i) => {
+    const flStr = fmtDeadline(r.deadline || calcDeadline(r.start));
+    const deadlineHtml = selected && i > 0 ? '' : `FECHA LÍMITE<br>${esc(flStr)}`;
+    return `<tr>
+      <td>${esc(r.cliente)}</td>
+      <td>${esc(r.anunciante)}</td>
+      <td>#${esc(r.campana)}</td>
+      <td>${esc(r.articulo)}</td>
+      <td>${esc(r.nivel)}</td>
+      <td>${periodChipHtml(r)}</td>
+      <td class="deadline-cell">${deadlineHtml}</td>
+      <td>${fmtDate(r.start)}</td>
+      <td>${fmtDate(r.end)}</td>
+      <td>${esc(r.desktop)}</td>
+      <td>${esc(r.mobile)}</td>
+      <td>${esc(r.app1)}</td>
+      <td>${esc(r.app2||'—')}</td>
+    </tr>`;
+  }).join('');
+}
+
+function getMeses(rows) {
+  const s = new Set();
+  rows.forEach(r => { if (r.start) s.add(r.start.getMonth()+1); if(r.end) s.add(r.end.getMonth()+1); });
+  return [...s].sort((a,b)=>a-b).map(m=>MESES_ES[m]).join(' y ');
+}
+
+function buildSpecsTable(rows) {
+  return `<table class="specs-table" style="font-size:11px;width:100%;margin:8px 0 16px;text-align:center">
+    <thead><tr>
+      <th class="h-dark">Cliente</th>
+      <th class="h-dark">Anunciante / Marca</th>
+      <th class="h-dark">Periodo(s)</th>
+      <th class="h-dark">Artículo</th>
+      <th class="h-dark">Nivel</th>
+      <th class="h-blue">Fijación</th>
+      <th class="h-blue">Retirada</th>
+      <th class="h-green">Desktop</th>
+      <th class="h-green">Mobile</th>
+      <th class="h-green">App 1</th>
+      <th class="h-green">App 2</th>
+    </tr></thead>
+    <tbody>
+      ${rows.map(r=>`<tr>
+        <td style="text-align:center">${esc(r.cliente)}</td><td style="text-align:center">${esc(r.anunciante)}</td><td style="text-align:center">${periodChipHtml(r)}</td><td style="text-align:center">${esc(r.articulo)}</td><td style="text-align:center">${esc(r.nivel)}</td>
+        <td style="text-align:center">${fmtDate(r.start)}</td><td style="text-align:center">${fmtDate(r.end)}</td>
+        <td style="text-align:center">${esc(r.desktop)}</td><td style="text-align:center">${esc(r.mobile)}</td><td style="text-align:center">${esc(r.app1)}</td><td style="text-align:center">${esc(r.app2||'—')}</td>
+      </tr>`).join('')}
+    </tbody>
+  </table>`;
+}
+
+function renderBorrador() {
+  const val = document.getElementById('borradorSelect').value;
+  const contentEl = document.getElementById('borradorContent');
+  if (!val) {
+    contentEl.innerHTML = '<div class="placeholder-msg">Selecciona cliente, anunciante o marca y campaña para generar el borrador</div>';
+    return;
+  }
+  const [cli, anu, camp] = val.split('|||');
+  const rows = getFilteredConsolidatedRecords().filter(r => r.cliente === cli && r.anunciante === anu && r.campana === camp);
+  if (!rows.length) return;
+
+  const start = rows.reduce((m,r) => r.start && (!m||r.start<m)?r.start:m, null);
+  const end = rows.reduce((m,r) => r.end && (!m||r.end>m)?r.end:m, null);
+  const fl = calcDeadline(start);
+  const flStr = fmtDeadline(fl);
+  const meses = getMeses(rows);
+  const cliente = rows[0].cliente;
+  const periodos = [...new Set(rows.flatMap(r => (r.periods || []).map(p=>p.code)))].join(', ');
+
+  const asunto = `${camp} | ${cliente} | Campañas Soriana.com | ${meses}`;
+  const specsHtml = buildSpecsTable(rows);
+  const sem = semaforo(fl, end);
+
+  const cuerpoIntro = `Hola [nombre],\n\nEspero se encuentren muy bien. Les compartimos las especificaciones técnicas de la campaña #${camp}, activa del ${fmtDate(start)} al ${fmtDate(end)}, correspondiente a los periodos ${periodos}.\n\nA continuación encontrarán el detalle de las creatividades requeridas:`;
+  const cuerpoCierre = `📅 Fecha límite de entrega de materiales: ${flStr}\nEsta fecha es indispensable para asegurar la correcta implementación de su campaña. Materiales recibidos fuera de plazo podrán quedar sujetos a reprogramación.\n\n📎 Adjunto encontrarán nuestra Guía de Buenas Prácticas con los requisitos técnicos que deben cumplir todos los materiales antes del envío.\n\nAnte cualquier duda, con gusto les orientamos.\n\nSaludos,`;
+
+  contentEl.innerHTML = `
+    <div class="deadline-badge" style="margin-bottom:16px">
+      <div class="dl-label">FECHA LÍMITE DE ENTREGA · <span class="sem ${sem.cls}" style="margin-left:6px">${sem.txt}</span></div>
+      <div class="dl-date">${esc(flStr)}</div>
+    </div>
+    <div class="field-label">CLIENTE</div>
+    <div class="field-val" style="margin-bottom:12px">${esc(cliente)}</div>
+    <div class="field-label">ANUNCIANTE / MARCA</div>
+    <div class="field-val" style="margin-bottom:16px">${esc(anu)}</div>
+    <div class="field-label">ASUNTO</div>
+    <div class="field-val" style="margin-bottom:16px">${esc(asunto)}</div>
+    <div class="field-label">CUERPO</div>
+    <div style="background:#F8FAFC;border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:14px">
+      <div style="white-space:pre-wrap;font-size:12px;line-height:1.7;color:#1a1a2e;margin-bottom:12px">${esc(cuerpoIntro)}</div>
+      ${specsHtml}
+      <div style="white-space:pre-wrap;font-size:12px;line-height:1.7;color:#1a1a2e">${esc(cuerpoCierre)}</div>
+    </div>
+    <button class="btn-copy" id="btnCopyBorrador" onclick="copyBorradorCompleto('${cliente.replace(/'/g,"\\'")}','${anu.replace(/'/g,"\\'")}','${camp.replace(/'/g,"\\'")}')">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+      Copiar borrador para Outlook
+    </button>`;
+}
+
+
+function emailTableHtml(rows) {
+  // Tabla 100% inline para Outlook. Evita clases/CSS externos porque Outlook los ignora o los destruye.
+  const tableStyle = 'border-collapse:collapse;width:100%;font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#1a1a1a;margin:12px 0 18px 0;mso-table-lspace:0pt;mso-table-rspace:0pt;';
+  const thBase = 'border:1px solid #FFFFFF;padding:7px 8px;text-align:center;font-weight:bold;color:#FFFFFF;white-space:nowrap;vertical-align:middle;font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:14px;';
+  const tdBase = 'border:1px solid #D9E2EF;padding:7px 8px;text-align:center;vertical-align:middle;color:#1a1a1a;font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:14px;';
+  const headers = [
+    ['Cliente','#1F3864'],['Anunciante / Marca','#1F3864'],['Periodo(s)','#1F3864'],['Artículo','#1F3864'],['Nivel','#1F3864'],
+    ['Fijación','#2E75B6'],['Retirada','#2E75B6'],['Desktop','#375623'],['Mobile','#375623'],['App 1','#375623'],['App 2','#375623']
+  ];
+  const head = headers.map(h => `<th bgcolor="${h[1]}" align="center" valign="middle" style="${thBase}background-color:${h[1]};color:#FFFFFF;"><font color="#FFFFFF"><b>${esc(h[0])}</b></font></th>`).join('');
+  const body = rows.map((r,idx) => {
+    const bg = idx % 2 ? '#F8FAFC' : '#FFFFFF';
+    const cells = [
+      r.cliente, r.anunciante, periodText(r), r.articulo, r.nivel,
+      fmtDate(r.start), fmtDate(r.end), r.desktop, r.mobile, r.app1, r.app2 || '—'
+    ];
+    return `<tr bgcolor="${bg}" style="background-color:${bg};">${cells.map(c => `<td bgcolor="${bg}" align="center" valign="middle" style="${tdBase}background-color:${bg};">${esc(c)}</td>`).join('')}</tr>`;
+  }).join('');
+  return `<table role="presentation" style="${tableStyle}" cellpadding="0" cellspacing="0" border="1"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table>`;
+}
+
+function emailTablePlain(rows) {
+  const header = ['Cliente','Anunciante / Marca','Periodos','Artículo','Nivel','Fijación','Retirada','Desktop','Mobile','App 1','App 2'].join('\t');
+  const filas = rows.map(r => [r.cliente,r.anunciante,periodText(r),r.articulo,r.nivel,fmtDate(r.start),fmtDate(r.end),r.desktop,r.mobile,r.app1,r.app2||'—'].join('\t')).join('\n');
+  return `${header}\n${filas}`;
+}
+
+function buildEmailPayload(cli, anu, camp) {
+  const rows = getFilteredConsolidatedRecords().filter(r => r.cliente === cli && r.anunciante === anu && r.campana === camp);
+  if(!rows.length) return null;
+  const start = rows.reduce((m,r) => r.start && (!m||r.start<m)?r.start:m, null);
+  const end = rows.reduce((m,r) => r.end && (!m||r.end>m)?r.end:m, null);
+  const flStr = fmtDeadline(calcDeadline(start));
+  const meses = getMeses(rows);
+  const cliente = rows[0].cliente;
+  const periodos = [...new Set(rows.flatMap(r => (r.periods || []).map(p=>p.code)))].join(', ');
+  const asunto = `${camp} | ${cliente} | Campañas Soriana.com | ${meses}`;
+
+  const html = `
+  <div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.45;color:#1a1a1a;">
+    <p style="margin:0 0 14px 0;">Hola [nombre],</p>
+
+    <p style="margin:0 0 14px 0;">Espero se encuentren muy bien. Les compartimos las especificaciones técnicas de la campaña <strong>#${esc(camp)}</strong>, activa del <strong>${fmtDate(start)}</strong> al <strong>${fmtDate(end)}</strong>, correspondiente a los periodos <strong>${esc(periodos)}</strong>.</p>
+
+    <p style="margin:0 0 8px 0;">A continuación encontrarán el detalle de las creatividades requeridas:</p>
+
+    ${emailTableHtml(rows)}
+
+    <p style="margin:0 0 8px 0;"><strong>📅 Fecha límite de entrega de materiales:</strong> ${esc(flStr)}</p>
+    <p style="margin:0 0 16px 0;">Esta fecha es indispensable para asegurar la correcta implementación de su campaña. Materiales recibidos fuera de plazo podrán quedar sujetos a reprogramación.</p>
+
+    <p style="margin:0 0 16px 0;"><strong>📎 Adjunto encontrarán nuestra Guía de Buenas Prácticas</strong> con los requisitos técnicos que deben cumplir todos los materiales antes del envío.</p>
+
+    <p style="margin:0 0 16px 0;">Ante cualquier duda, con gusto les orientamos.</p>
+
+    <p style="margin:0;">Saludos,</p>
+  </div>`;
+
+  const plain = `Cliente: ${cliente}\nAnunciante / Marca: ${anu}\nAsunto: ${asunto}\n\nHola [nombre],\n\nEspero se encuentren muy bien. Les compartimos las especificaciones técnicas de la campaña #${camp}, activa del ${fmtDate(start)} al ${fmtDate(end)}, correspondiente a los periodos ${periodos}.\n\nA continuación encontrarán el detalle de las creatividades requeridas:\n\n${emailTablePlain(rows)}\n\n📅 Fecha límite de entrega de materiales: ${flStr}\nEsta fecha es indispensable para asegurar la correcta implementación de su campaña. Materiales recibidos fuera de plazo podrán quedar sujetos a reprogramación.\n\n📎 Adjunto encontrarán nuestra Guía de Buenas Prácticas con los requisitos técnicos que deben cumplir todos los materiales antes del envío.\n\nAnte cualquier duda, con gusto les orientamos.\n\nSaludos,`;
+
+  return {html, plain, asunto, rows};
+}
+
+async function copyRichToClipboard(html, plain) {
+  // 1) Intento moderno: copia HTML + texto al portapapeles.
+  try {
+    if (navigator.clipboard && window.ClipboardItem) {
+      await navigator.clipboard.write([
+        new ClipboardItem({
+          'text/html': new Blob([html], {type:'text/html'}),
+          'text/plain': new Blob([plain], {type:'text/plain'})
+        })
+      ]);
+      return true;
+    }
+  } catch(e) {
+    // En archivo local o ciertos navegadores, ClipboardItem puede fallar. Pasamos a fallback HTML.
+  }
+
+  // 2) Fallback fuerte para Outlook: selecciona un DIV con HTML real y ejecuta copy.
+  try {
+    const div = document.createElement('div');
+    div.setAttribute('contenteditable', 'true');
+    div.style.position = 'fixed';
+    div.style.left = '-9999px';
+    div.style.top = '0';
+    div.style.width = '1200px';
+    div.style.background = '#ffffff';
+    div.innerHTML = html;
+    document.body.appendChild(div);
+
+    const range = document.createRange();
+    range.selectNodeContents(div);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+
+    const ok = document.execCommand('copy');
+    sel.removeAllRanges();
+    document.body.removeChild(div);
+    if (ok) return true;
+  } catch(e) {
+    // Último recurso: texto plano.
+  }
+
+  // 3) Fallback final: texto plano.
+  try {
+    await navigator.clipboard.writeText(plain);
+    return false;
+  } catch(e) {
+    const ta = document.createElement('textarea');
+    ta.value = plain;
+    ta.style.position = 'fixed';
+    ta.style.left = '-9999px';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    return false;
+  }
+}
+
+async function copyBorradorCompleto(cli, anu, camp) {
+  const payload = buildEmailPayload(cli, anu, camp);
+  if(!payload) return;
+  const rich = await copyRichToClipboard(payload.html, payload.plain);
+  const btn = document.getElementById('btnCopyBorrador');
+  if(btn){btn.innerHTML='<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> ¡Copiado para Outlook!';setTimeout(()=>{btn.innerHTML='<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copiar borrador para Outlook'},2200);}
+  showToast(rich ? '✓ Borrador copiado con tabla para Outlook' : '✓ Borrador copiado como texto');
+}
+
+async function copySpecs(cli, anu, camp) {
+  const payload = buildEmailPayload(cli, anu, camp);
+  if(!payload) return;
+  const start = payload.rows.reduce((m,r) => r.start && (!m||r.start<m)?r.start:m, null);
+  const flStr = fmtDeadline(calcDeadline(start));
+  const html = `<div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#1a1a1a;"><p style="margin:0 0 8px 0;"><strong>SPECS — ${esc(cli)} | ${esc(anu)} | #${esc(camp)}</strong></p><p style="margin:0 0 12px 0;"><strong>Fecha límite:</strong> ${esc(flStr)}</p>${emailTableHtml(payload.rows)}</div>`;
+  const plain = `SPECS — ${cli} | ${anu} | #${camp}\nFecha límite: ${flStr}\n\n${emailTablePlain(payload.rows)}`;
+  const rich = await copyRichToClipboard(html, plain);
+  showToast(rich ? '✓ Specs copiadas con tabla para Outlook' : '✓ Specs copiadas como texto');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+</script>
+</body>
+</html>
