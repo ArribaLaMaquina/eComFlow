@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>eComFlow V3.6.3 Hotfix — Periodo Id</title>
+<title>eComFlow V3.6.4 Hotfix — Periodo Id exacto</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
@@ -614,7 +614,7 @@ tr:hover td{background:rgba(234,242,255,.42);}
               <div class="dashboard-heading-title">Resumen operativo</div>
               <div class="dashboard-heading-sub">Lectura rápida del archivo cargado, avance semanal y volumen de materiales por gestionar.</div>
             </div>
-            <div class="dashboard-pill">⚙ V3.6.3 Hotfix · Periodo Id como fuente semanal</div>
+            <div class="dashboard-pill">⚙ V3.6.4 Hotfix · Periodo Id exacto</div>
           </div>
           <div id="weekSummary" class="week-summary"></div>
           <div id="opsKpiCards" class="ops-kpi-grid" style="display:none"></div>
@@ -1497,13 +1497,25 @@ function adjacentPeriod(period, offset){
 function periodMatchesRecord(r, period){
   if(!period) return false;
   const periods = r.periods && r.periods.length ? r.periods : (r.periodKey ? [{key:r.periodKey, periodId:r.periodId, code:r.periodCode, start:r.weekStart || r.start, end:r.weekEnd || r.end}] : []);
-  // V3.6.3: para periodos del Excel, la pertenencia es exacta por Periodo Id / periodKey.
+  // V3.6.4: para periodos del Excel, la pertenencia es exacta por Periodo Id / periodKey.
   // No se usa traslape de fechas aquí para evitar conteos inflados.
   if(period.key && periods.some(p => p.key === period.key)) return true;
   if(period.periodId && periods.some(p => normalizePeriodId(p.periodId) === normalizePeriodId(period.periodId))) return true;
   if(period.code && periods.some(p => String(p.code||'').toUpperCase() === String(period.code||'').toUpperCase())) return true;
   return false;
 }
+function recordMatchesExactPeriodId(r, period){
+  if(!period || !r) return false;
+  // V3.6.4: el resumen semanal NO debe usar r.periods porque viene del consolidado.
+  // Solo cuenta el Periodo Id / periodKey original de la fila semanal ya depurada.
+  const recordPeriodId = normalizePeriodId(r.periodId);
+  const targetPeriodId = normalizePeriodId(period.periodId);
+  if(targetPeriodId) return recordPeriodId === targetPeriodId;
+  if(period.key && r.periodKey) return r.periodKey === period.key;
+  if(period.code && r.periodCode) return String(r.periodCode||'').toUpperCase() === String(period.code||'').toUpperCase();
+  return false;
+}
+
 function periodMatchesDoc(g, period){
   if(!period) return false;
   const ptxt = String(g.periodText || '').toUpperCase();
@@ -1514,7 +1526,7 @@ function countEspaciosEnPeriodo(periodOrKey){
   let period = typeof periodOrKey === 'string' ? getPeriodoByKey(periodOrKey) : periodOrKey;
   if(!period) return {total:0, nuevos:0, listas:0, testigos:0, completas:0, enSeguimiento:0, desdeMemoria:0};
 
-  // V3.6.3 Hotfix:
+  // V3.6.4 Hotfix:
   // El resumen semanal se calcula únicamente con registros ya depurados:
   // 1) Artículo eCommerce válido
   // 2) Cadena normalizada
@@ -1534,7 +1546,7 @@ function countEspaciosEnPeriodo(periodOrKey){
 
   weeklyRecords
     .filter(r => !chainFilter || chainFilter === 'all' || normalizeChain(r.cadena) === normalizeChain(chainFilter))
-    .filter(r => periodMatchesRecord(r, period))
+    .filter(r => recordMatchesExactPeriodId(r, period))
     .forEach(r => {
       const opKey = checklistOperationalKey(r);
       const id = sanitizeId(opKey);
@@ -1589,7 +1601,7 @@ function renderWeekSummary(){
   const wrap = document.getElementById('weekSummary');
   if(!wrap) return;
 
-  // V3.6.3 Hotfix:
+  // V3.6.4 Hotfix:
   // Las tarjetas semanales deben responder a la pregunta: “¿qué trae el Excel cargado?”.
   // No se usa memoria operativa para crear semanas sintéticas ni para inflar conteos.
   if(!periodCatalog.length){ wrap.innerHTML = ''; return; }
