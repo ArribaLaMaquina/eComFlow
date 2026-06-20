@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Com Flow — In-Store Media</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;background:#F4F6FA;color:#1a1a2e;min-height:100vh}
@@ -146,6 +149,41 @@ tr:hover td{background:#F8FAFC}
 .sem-red{background:#FDECEC;color:#B91C1C}
 .sem-gray{background:#F3F4F6;color:#6B7280}
 
+
+/* === Login overlay === */
+#loginOverlay{position:fixed;inset:0;background:var(--dark);display:flex;align-items:center;justify-content:center;z-index:9999}
+.login-card{background:#fff;border-radius:12px;padding:32px 36px;width:320px;box-shadow:0 10px 40px rgba(0,0,0,.3)}
+.login-card h2{margin:0 0 4px;font-size:18px;color:var(--dark)}
+.login-card p{margin:0 0 18px;font-size:13px;color:var(--muted)}
+.login-card input{width:100%;box-sizing:border-box;padding:10px 12px;margin-bottom:10px;border:1px solid var(--border);border-radius:8px;font-size:14px}
+.login-card button{width:100%;padding:10px;border:none;border-radius:8px;background:var(--blue);color:#fff;font-weight:600;cursor:pointer;font-size:14px}
+.login-card button:hover{opacity:.92}
+#loginError{color:#B91C1C;font-size:12.5px;min-height:16px;margin-bottom:6px}
+.user-badge{display:flex;align-items:center;gap:8px;font-size:12.5px;color:#fff;opacity:.85;padding:0 14px 10px}
+.user-badge button{background:none;border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:6px;padding:3px 8px;font-size:11px;cursor:pointer}
+
+/* === Control operativo / Gantt === */
+.control-toolbar{display:flex;align-items:center;gap:14px;margin-bottom:14px;flex-wrap:wrap}
+.control-legend{display:flex;gap:14px;font-size:12px;color:var(--muted);align-items:center}
+.legend-dot{width:10px;height:10px;border-radius:3px;display:inline-block;margin-right:4px;vertical-align:middle}
+.gantt-wrap{border:1px solid var(--border);border-radius:10px;overflow:auto;background:#fff;max-height:72vh}
+.gantt-table{display:grid;grid-template-columns:230px 110px 130px repeat(6,46px) 1fr;min-width:1100px}
+.gantt-head{position:sticky;top:0;background:var(--alt);font-size:11px;font-weight:700;color:var(--dark);padding:8px 6px;border-bottom:1px solid var(--border);z-index:3}
+.gantt-cell{padding:8px 6px;border-bottom:1px solid var(--border);font-size:12px;display:flex;align-items:center}
+.gantt-row-name{flex-direction:column;align-items:flex-start;gap:2px}
+.gantt-row-name b{font-size:12.5px;color:var(--dark)}
+.gantt-row-name span{font-size:11px;color:var(--muted)}
+.gantt-chk{justify-content:center}
+.gantt-chk input{width:16px;height:16px;cursor:pointer}
+.gantt-track{position:relative;padding:8px 0;min-height:38px}
+.gantt-track-inner{position:relative;height:22px}
+.gantt-bar{position:absolute;top:0;height:22px;border-radius:5px;font-size:10px;color:#fff;display:flex;align-items:center;padding:0 6px;white-space:nowrap;overflow:hidden;cursor:default}
+.gantt-bar.green{background:#3C8A3C}
+.gantt-bar.yellow{background:#C7960B}
+.gantt-bar.red{background:#C0392B}
+.gantt-bar.gray{background:#9AA3AF}
+.gantt-updated{font-size:10px;color:var(--muted);margin-top:2px}
+.sticky-col{position:sticky;left:0;background:#fff;z-index:2}
 </style>
 </head>
 <body>
@@ -175,9 +213,28 @@ tr:hover td{background:#F8FAFC}
       <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M4 9h16M8 4v5"/></svg>
       Borradores
     </div>
+    <div class="sb-item" onclick="setView('control')">
+      <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 17l4-6 4 3 6-9"/><circle cx="3" cy="17" r="1.5"/><circle cx="7" cy="11" r="1.5"/><circle cx="11" cy="14" r="1.5"/><circle cx="17" cy="5" r="1.5"/></svg>
+      Control operativo
+    </div>
     <div class="sb-file">
       <div class="sb-file-label">ARCHIVO CARGADO</div>
       <div class="sb-file-name" id="sbFileName">— ninguno —</div>
+    </div>
+    <div class="user-badge" id="userBadge" style="display:none">
+      <span id="userEmailLabel"></span>
+      <button onclick="doLogout()">Salir</button>
+    </div>
+  </div>
+
+  <div id="loginOverlay">
+    <div class="login-card">
+      <h2>Com Flow — Control operativo</h2>
+      <p>Inicia sesión con tu cuenta de ISM para continuar.</p>
+      <div id="loginError"></div>
+      <input type="email" id="loginEmail" placeholder="correo@ism.com.mx" autocomplete="username">
+      <input type="password" id="loginPassword" placeholder="Contraseña" autocomplete="current-password">
+      <button onclick="doLogin()">Entrar</button>
     </div>
   </div>
 
@@ -316,6 +373,21 @@ tr:hover td{background:#F8FAFC}
               <div class="placeholder-msg">Selecciona cliente, anunciante o marca y campaña para generar el borrador</div>
             </div>
           </div>
+      </div>
+
+      <div id="view-control" style="display:none">
+        <div class="control-toolbar">
+          <div class="control-legend">
+            <span><span class="legend-dot" style="background:#3C8A3C"></span>En margen</span>
+            <span><span class="legend-dot" style="background:#C7960B"></span>Prioridad</span>
+            <span><span class="legend-dot" style="background:#C0392B"></span>Vencida / hoy</span>
+            <span><span class="legend-dot" style="background:#9AA3AF"></span>Finalizada</span>
+          </div>
+          <div class="mode-hint" style="margin:0">Marca avance por Campaña + Espacio. Los checks se sincronizan en vivo con tu equipo.</div>
+        </div>
+        <div class="gantt-wrap" id="ganttWrap">
+          <div class="placeholder-msg">Carga un archivo para ver el control operativo.</div>
+        </div>
       </div>
 
     </div>
@@ -465,16 +537,17 @@ function semaforoHtml(r){
 }
 
 function setView(v) {
-  ['dashboard','ecommerce','specs','borrador'].forEach(id => {
+  ['dashboard','ecommerce','specs','borrador','control'].forEach(id => {
     document.getElementById('view-'+id).style.display = id===v ? '' : 'none';
     document.querySelectorAll('.sb-item').forEach((el,i) => {
-      const views = ['dashboard','ecommerce','specs','borrador'];
+      const views = ['dashboard','ecommerce','specs','borrador','control'];
       el.classList.toggle('active', views[i]===v);
     });
   });
-  const titles = {dashboard:'Dashboard',ecommerce:'Ecommerce',specs:'Specs clientes',borrador:'Borradores'};
+  const titles = {dashboard:'Dashboard',ecommerce:'Ecommerce',specs:'Specs clientes',borrador:'Borradores',control:'Control operativo'};
   document.getElementById('topTitle').textContent = titles[v];
   currentView = v;
+  if(v === 'control') renderGantt();
 }
 
 function setMode(mode){
@@ -528,9 +601,7 @@ function getSelectedPeriodRange(){
 function recordMatchesSelectedPeriod(r, period, mode){
   if(!period) return true;
   if(period.isNextFriday){
-    const startsNextFriday = (p) => sameDate(p && p.start, period.start);
-    if(mode === 'weekly') return sameDate(r.start || r.fij, period.start) || startsNextFriday({start:r.start});
-    return (r.periods || []).some(startsNextFriday);
+    return sameDate(r.start, period.start);
   }
   if(mode === 'weekly') return r.periodKey === selectedPeriod;
   return (r.periods || []).some(p => p.key === selectedPeriod) || overlaps(r.start, r.end, period.start, period.end);
@@ -598,8 +669,10 @@ function processFile(file) {
         cdesc:     String(get(row,'Creatividad Desc.')||'').trim(),
         estado:    String(get(row,'Creatividad Estado')||'').trim(),
         fij, ret,
-        start: periodo.start || fij,
-        end: periodo.end || ret,
+        start: fij || periodo.start,
+        end: ret || periodo.end,
+        weekStart: periodo.start,
+        weekEnd: periodo.end,
         periodCode: periodo.code,
         periodLabel: periodo.label,
         periodKey: periodo.key,
@@ -639,7 +712,7 @@ function processFile(file) {
       if(re && (!c.end || re > c.end)) c.end = re;
       if(r.periodKey && !c.periodKeys.has(r.periodKey)) {
         c.periodKeys.add(r.periodKey);
-        c.periods.push({key:r.periodKey, code:r.periodCode, label:r.periodLabel, start:r.start, end:r.end});
+        c.periods.push({key:r.periodKey, code:r.periodCode, label:r.periodLabel, start:r.weekStart, end:r.weekEnd});
       }
     });
 
@@ -662,6 +735,7 @@ function processFile(file) {
     if (uploadArea) uploadArea.classList.add('is-hidden');
     document.getElementById('dashStats').style.display = '';
     refreshAll();
+    syncChecklistFromRecords(consolidatedRecords);
     showToast('✓ Archivo procesado — ' + consolidatedRecords.length + ' registros consolidados · ' + weeklyRecords.length + ' registros semanales');
   };
   reader.readAsArrayBuffer(file);
@@ -1067,6 +1141,278 @@ function showToast(msg) {
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2800);
 }
+
+/* ============================================================
+   CONTROL OPERATIVO — Firebase (Auth + Firestore) + Gantt
+   ============================================================
+   1) Crea tu proyecto en https://console.firebase.google.com
+   2) Build > Firestore Database > Crear (modo producción)
+   3) Build > Authentication > Sign-in method > habilita "Correo electrónico/contraseña"
+   4) Authentication > Users > agrega manualmente a cada compañero (correo + contraseña)
+   5) ⚙️ Configuración del proyecto > Tus apps > Web (</>) > copia el objeto firebaseConfig
+      y pégalo abajo, reemplazando el bloque de ejemplo.
+   6) En Firestore > Reglas, pega las reglas que te compartí aparte (solo usuarios
+      autenticados pueden leer/escribir la colección "checklist").
+   ============================================================ */
+const firebaseConfig = {
+  apiKey: "AIzaSyAmHkDyeqdcws6bXnTiM3jE4dOsfNb4dzA",
+  authDomain: "ism-ecomflow.firebaseapp.com",
+  projectId: "ism-ecomflow",
+  storageBucket: "ism-ecomflow.firebasestorage.app",
+  messagingSenderId: "1048720173775",
+  appId: "1:1048720173775:web:31028d60aefcba21ba25ba"
+};
+
+let fbApp = null, fbAuth = null, fbDb = null;
+let currentUserEmail = null;
+let checklistState = new Map();   // id -> doc data (incluye checks, reportHash, etc.)
+let checklistLoaded = false;
+let pendingChecklistGroups = null; // si llega un archivo antes de que cargue el snapshot inicial
+
+const CHECK_FIELDS = [
+  {key:'artes',       label:'Artes'},
+  {key:'validacion',  label:'Valid.'},
+  {key:'link',        label:'Link'},
+  {key:'kevel',       label:'Kevel'},
+  {key:'testigosApp', label:'Test. App'},
+  {key:'testigosWeb', label:'Test. Web'},
+];
+
+function fbReady(){ return !!(fbApp && fbAuth && fbDb); }
+
+function initFirebase(){
+  if(firebaseConfig.apiKey.startsWith('REEMPLAZA')){
+    document.getElementById('loginError').textContent = 'Falta configurar Firebase (firebaseConfig) en el código.';
+    return;
+  }
+  fbApp = firebase.initializeApp(firebaseConfig);
+  fbAuth = firebase.auth();
+  fbDb = firebase.firestore();
+
+  fbAuth.onAuthStateChanged(user => {
+    if(user){
+      currentUserEmail = user.email;
+      document.getElementById('loginOverlay').style.display = 'none';
+      document.getElementById('userBadge').style.display = 'flex';
+      document.getElementById('userEmailLabel').textContent = currentUserEmail;
+      startChecklistListener();
+    } else {
+      currentUserEmail = null;
+      document.getElementById('loginOverlay').style.display = 'flex';
+      document.getElementById('userBadge').style.display = 'none';
+    }
+  });
+}
+
+function doLogin(){
+  if(!fbReady()) return;
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass = document.getElementById('loginPassword').value;
+  const errEl = document.getElementById('loginError');
+  errEl.textContent = '';
+  fbAuth.signInWithEmailAndPassword(email, pass).catch(err => {
+    errEl.textContent = 'No se pudo iniciar sesión: correo o contraseña incorrectos.';
+  });
+}
+
+function doLogout(){
+  if(!fbReady()) return;
+  fbAuth.signOut();
+}
+
+function sanitizeId(s){
+  return String(s||'').trim().toUpperCase().replace(/[\/\#\?\[\]]/g,'-').slice(0,300) || 'SIN_DATO';
+}
+
+function checklistGroupKey(rec){
+  return [rec.campana, rec.articulo, rec.nivel].map(v => String(v||'').trim().toUpperCase()).join('|||');
+}
+
+function buildChecklistGroups(records){
+  const map = new Map();
+  records.forEach(r => {
+    const key = checklistGroupKey(r);
+    if(!map.has(key)){
+      map.set(key, {
+        id: sanitizeId(key),
+        cliente: r.cliente, anunciante: r.anunciante, campana: r.campana,
+        articulo: r.articulo, espacio: r.nivel,
+        creatividadIds: new Set(),
+        start: r.start, end: r.end,
+      });
+    }
+    const g = map.get(key);
+    if(r.cid) g.creatividadIds.add(r.cid);
+    if(r.start && (!g.start || r.start < g.start)) g.start = r.start;
+    if(r.end && (!g.end || r.end > g.end)) g.end = r.end;
+  });
+  return [...map.values()].map(g => {
+    g.creatividadIds = [...g.creatividadIds].sort();
+    g.deadline = calcDeadline(g.start);
+    g.reportHash = `${fmtDate(g.start)}|${fmtDate(g.end)}|${g.creatividadIds.join(',')}`;
+    return g;
+  });
+}
+
+function syncChecklistFromRecords(consolidated){
+  const groups = buildChecklistGroups(consolidated);
+  if(!fbReady() || !checklistLoaded){
+    pendingChecklistGroups = groups; // se sincroniza en cuanto el listener cargue
+    return;
+  }
+  writeChecklistGroups(groups);
+}
+
+function writeChecklistGroups(groups){
+  if(!fbReady()) return;
+  const CHUNK = 400;
+  let i = 0;
+  function nextBatch(){
+    if(i >= groups.length){ renderGantt(); return; }
+    const batch = fbDb.batch();
+    const slice = groups.slice(i, i+CHUNK);
+    slice.forEach(g => {
+      const existing = checklistState.get(g.id);
+      const isNew = !existing;
+      if(!isNew && existing.reportHash === g.reportHash) return; // sin cambios, no tocar
+      const ref = fbDb.collection('checklist').doc(g.id);
+      const payload = {
+        cliente:g.cliente, anunciante:g.anunciante, campana:g.campana,
+        articulo:g.articulo, espacio:g.espacio, creatividadIds:g.creatividadIds,
+        start: g.start ? firebase.firestore.Timestamp.fromDate(g.start) : null,
+        end: g.end ? firebase.firestore.Timestamp.fromDate(g.end) : null,
+        deadline: g.deadline ? firebase.firestore.Timestamp.fromDate(g.deadline) : null,
+        reportHash: g.reportHash,
+        lastReportChangeAt: firebase.firestore.FieldValue.serverTimestamp(),
+      };
+      if(isNew){
+        payload.checks = {artes:false, validacion:false, link:false, kevel:false, testigosApp:false, testigosWeb:false};
+        payload.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+      }
+      batch.set(ref, payload, {merge:true});
+    });
+    batch.commit().then(() => { i += CHUNK; nextBatch(); })
+      .catch(err => { showToast('⚠ Error sincronizando control operativo'); console.error(err); });
+  }
+  nextBatch();
+}
+
+function startChecklistListener(){
+  if(!fbReady()) return;
+  fbDb.collection('checklist').onSnapshot(snap => {
+    snap.docChanges().forEach(ch => {
+      if(ch.type === 'removed') checklistState.delete(ch.doc.id);
+      else checklistState.set(ch.doc.id, ch.doc.data());
+    });
+    checklistLoaded = true;
+    if(pendingChecklistGroups){
+      const toSync = pendingChecklistGroups; pendingChecklistGroups = null;
+      writeChecklistGroups(toSync);
+    }
+    if(currentView === 'control') renderGantt();
+  }, err => { console.error(err); showToast('⚠ Error de conexión con el control operativo'); });
+}
+
+function toggleChecklistField(id, field){
+  if(!fbReady() || !currentUserEmail) return;
+  const cur = checklistState.get(id);
+  const curVal = !!(cur && cur.checks && cur.checks[field]);
+  fbDb.collection('checklist').doc(id).set({
+    checks: { [field]: !curVal },
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+    updatedBy: currentUserEmail,
+  }, {merge:true});
+}
+
+function tsToDate(ts){
+  if(!ts) return null;
+  if(ts.toDate) return ts.toDate();
+  return null;
+}
+
+function ganttSemaforoClass(deadline, end){
+  const s = semaforo(deadline, end);
+  if(s.cls === 'sem-green') return 'green';
+  if(s.cls === 'sem-yellow') return 'yellow';
+  if(s.cls === 'sem-red') return 'red';
+  return 'gray';
+}
+
+function renderGantt(){
+  const wrap = document.getElementById('ganttWrap');
+  if(!wrap) return;
+  if(!consolidatedRecords.length){
+    wrap.innerHTML = '<div class="placeholder-msg">Carga un archivo para ver el control operativo.</div>';
+    return;
+  }
+  if(!fbReady()){
+    wrap.innerHTML = '<div class="placeholder-msg">Falta configurar Firebase para activar el control operativo.</div>';
+    return;
+  }
+
+  const groups = [...checklistState.entries()]
+    .map(([id,d]) => ({id, ...d, start: tsToDate(d.start), end: tsToDate(d.end), deadline: tsToDate(d.deadline)}))
+    .filter(g => g.start && g.end)
+    .sort((a,b) => a.start - b.start);
+
+  if(!groups.length){
+    wrap.innerHTML = '<div class="placeholder-msg">Sincronizando control operativo…</div>';
+    return;
+  }
+
+  const minDate = groups.reduce((m,g) => g.start < m ? g.start : m, groups[0].start);
+  const maxDate = groups.reduce((m,g) => g.end > m ? g.end : m, groups[0].end);
+  const totalDays = Math.max(1, Math.round((maxDate - minDate)/86400000) + 1);
+  const dayWidth = 26;
+  const timelineWidth = totalDays * dayWidth;
+
+  let headDays = '';
+  for(let i=0;i<totalDays;i++){
+    const d = new Date(minDate.getTime() + i*86400000);
+    headDays += `<div style="position:absolute;left:${i*dayWidth}px;width:${dayWidth}px;text-align:center;font-size:9px;color:var(--muted);border-left:1px solid var(--border);height:100%;padding-top:4px;box-sizing:border-box">${d.getDate()}/${d.getMonth()+1}</div>`;
+  }
+
+  let rows = '';
+  groups.forEach(g => {
+    const left = Math.round((g.start - minDate)/86400000) * dayWidth;
+    const width = Math.max(dayWidth, (Math.round((g.end - g.start)/86400000)+1) * dayWidth);
+    const cls = ganttSemaforoClass(g.deadline, g.end);
+    const lastChange = tsToDate(g.lastReportChangeAt);
+    const checks = g.checks || {};
+    const checkboxes = CHECK_FIELDS.map(f => `
+      <div class="gantt-cell gantt-chk" title="${esc(f.label)}">
+        <input type="checkbox" ${checks[f.key] ? 'checked' : ''} onchange="toggleChecklistField('${esc(g.id)}','${f.key}')">
+      </div>`).join('');
+    rows += `
+      <div class="gantt-cell gantt-row-name sticky-col">
+        <b>${esc(g.cliente)} · ${esc(g.anunciante)}</b>
+        <span>#${esc(g.campana)} — ${esc(g.articulo)}</span>
+        ${lastChange ? `<span class="gantt-updated">Actualizado: ${fmtDate(lastChange)}</span>` : ''}
+      </div>
+      <div class="gantt-cell">${esc(g.espacio || '—')}</div>
+      <div class="gantt-cell">${esc((g.creatividadIds||[]).join(', ') || '—')}</div>
+      ${checkboxes}
+      <div class="gantt-cell gantt-track" style="width:${timelineWidth}px">
+        <div class="gantt-track-inner" style="width:${timelineWidth}px">
+          <div class="gantt-bar ${cls}" style="left:${left}px;width:${width}px" title="${fmtDate(g.start)} a ${fmtDate(g.end)} · Deadline ${fmtDeadline(g.deadline)}">${fmtDate(g.start)}–${fmtDate(g.end)}</div>
+        </div>
+      </div>`;
+  });
+
+  wrap.innerHTML = `
+    <div class="gantt-table">
+      <div class="gantt-head sticky-col">Cliente / Campaña</div>
+      <div class="gantt-head">Espacio</div>
+      <div class="gantt-head">Creatividad ID</div>
+      ${CHECK_FIELDS.map(f => `<div class="gantt-head" style="text-align:center">${esc(f.label)}</div>`).join('')}
+      <div class="gantt-head" style="position:relative;height:24px">
+        <div style="position:relative;width:${timelineWidth}px;height:100%">${headDays}</div>
+      </div>
+      ${rows}
+    </div>`;
+}
+
+initFirebase();
 </script>
 </body>
 </html>
