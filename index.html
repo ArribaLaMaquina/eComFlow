@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Com Flow — In-Store Media</title>
+<title>eComFlow V3.6 — In-Store Media</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
@@ -254,7 +254,7 @@ tr:hover td{background:#F8FAFC}
 
 /* === V3.3 Memoria operativa / Histórico / Cambios === */
 .load-scope-help{font-size:10.5px;color:var(--muted);max-width:280px;line-height:1.35;margin-top:2px}
-.ops-kpi-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin:0 0 18px}
+.ops-kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:0 0 18px}
 .ops-kpi-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px 14px;position:relative;overflow:hidden}
 .ops-kpi-card:after{content:"";position:absolute;right:-18px;bottom:-24px;width:64px;height:64px;border-radius:50%;background:rgba(46,117,182,.07)}
 .ops-kpi-label{font-size:10px;font-weight:800;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;position:relative;z-index:1}
@@ -267,6 +267,7 @@ tr:hover td{background:#F8FAFC}
 .st-finished-ok{background:#E8F5E9;color:#2E7D32}
 .st-finished-missing{background:#FDECEC;color:#B91C1C}
 .st-absent{background:#F3F4F6;color:#6B7280}
+.st-pautado{background:#EAF3FF;color:#0B63CE}
 .change-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
 .change-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px 16px}
 .change-card-label{font-size:10px;font-weight:800;color:var(--muted);letter-spacing:.05em;text-transform:uppercase}
@@ -402,7 +403,7 @@ body{
 .week-card.is-current{border-color:rgba(20,102,217,.35);box-shadow:0 0 0 4px rgba(20,102,217,.07), var(--shadow-soft);}
 .week-card-num{font-size:34px;color:var(--ink);letter-spacing:-.04em;}
 .week-card-label{color:#758199;}
-.ops-kpi-grid{grid-template-columns:repeat(6,minmax(0,1fr));gap:14px;}
+.ops-kpi-grid{grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;}
 .ops-kpi-card{min-height:112px;padding:18px 16px;}
 .ops-kpi-card:before,.stat-card:before{content:"";position:absolute;inset:auto 14px 14px auto;width:42px;height:42px;border-radius:15px;background:linear-gradient(135deg,rgba(20,102,217,.16),rgba(118,152,255,.09));}
 .ops-kpi-card:after,.stat-card:after{background:radial-gradient(circle,rgba(20,102,217,.10),transparent 66%);}
@@ -427,6 +428,7 @@ tr:hover td{background:rgba(234,242,255,.42);}
 .st-new{background:rgba(20,102,217,.13);color:var(--blue);}
 .st-finished-ok{background:rgba(60,138,60,.14);color:#277A39;}
 .st-absent{background:rgba(104,116,138,.12);color:#58657A;}
+.st-pautado{background:rgba(20,102,217,.12);color:var(--blue);}
 .checklist-wrap{border:1px solid rgba(31,56,100,.10);box-shadow:var(--shadow-soft);}
 .checklist-table thead th{background:rgba(229,239,255,.88);color:#1F3864;}
 .row-none{background:rgba(226,74,104,.065);}
@@ -459,7 +461,7 @@ tr:hover td{background:rgba(234,242,255,.42);}
     <div class="sb-brand">
       <div class="sb-logo-card"><img class="sb-logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAy0AAACuCAYAAAA73OLtAAAACXBIWXMAABYlAAAWJQFJUiTwAAAgAElEQVR4nO2dX4hk237X17peQ1Ck+2IMFzR0D/gQMNp19KJ5SJzaciHXIEwdE/Gg0anBi3/whlMjurlizNTESEIZmRqMUUNkqkFNhMTTbcQ/UdnVXB8CiqcqeTEqTpUg5EFyuiQP8SEuWX2+a2bN6rWr9p+1d+0/3w8U01NdvWv/WXvt33f9/kmllCCE1IeMk1MhxFDNoiuedkIIIYSQw3yG54g0HRkn07ZfJC1U9HHIOLkVQnwihJg0YLcIIYQQQloBRQtpA79Lxsm5u58QAhsZJ6Mix6C3KePkA/e9is7HAEJlJYSI1CwaVvQ9hBBCCCGdg6KFNBoZJ98uhPhuIcTY7KeMkwF+/EtCiK8KIZZ5j0F7PdQs2gghvlXGydj61WsZJ1euEIJAGtzfUqbv0n831yFhQohTNYty7y8hhBBCSJ/5LK8+aRpaIKhZdIvd+q3aMyGEuBMREBMfyTjR7/1DNYu2absPsXCuc0cgTF7hVzeW0NF5JQnyTF7gvUf6JeNEb3ukZtEKgmPkiKexmkWLDKdPH8sC3pYftfZlp9+DeCKEEEIIIWl2HRPxSdOQcTJRs2ju2y0ZJ1pAXMDgn6Z9Dp+9ggC5FEI8tn61gwjRvz87cPhvhIUORYPYOUeY19QSVweBiLrFSwsgLZSuKFoIIYQQQvZD0UIaBTwpUwiKf69m0dccz4tAMvsJBIX2YMxtwx/iwPx/CZFThkts55WzjZdqFk3wnSNfNTDsyxWqhVGcEEIIIYQUgOFhpBK0twSJ59pQX1nGvRYZkz0eiiFExgWMfc1KG//6byBqtJfjIYTLqXhbRnhkiZUpXpsAomUE74rLh/he/T2n8OxM8NkBvEC3+DmzR4YQQgghhLwLPS2kMiyPyHN4KlZIqv8l7UEx3yvjxFTS0v/+NyHEX0HC+jl+v4Q4MZ8bW/knO4iKleVVWcMDs4CIeFbDVd5aoWY6Z0awQhghhBBCSBhYPYxUgiVENEtUzNIhUj8hhPhFGSdfsX6vP5tAXPxdIcSf1kIEfU0mEB9jeCvm8GBc429P8LdjbGcN4fICXpa6+qHYuTHaC/TQVCVDaeXTmvaDEEIIIaRzULSQYGihYpUFXlmVtu48JibnA+Ljy9b32gJHi5B/LoT4Lai29cIID/RQOUWImP03a0uknDrbOslwfFvrFRJTJODc2S9CCCGEEJIDihZSGNOIUXsUUFkrMaWJtTCxEtOndo8TeB1s0TFHmJdBey3+BMSK8Zzo73oN43/hiJEJQrJOMlQD87FEKJrbP2WX7c9TOUEOz8otFNCFLv+EEEIIIXXBnBZSGCSeLyFUHmI7EfJR7gSL/oyaRSO3ApiwPCcQJMYrcWol0Z/jtYDnxpQtXuP3Rrxc4vcvch7LDfbblED+2Pn984D5MJfwBJ1bZY+XEDRM0ieEEEII2QNFS00gx2MI41p7HRZtLoGLXBMtEp7aYkHNIonE+SWqf81NQjq8C7emNwnOiamwtYL4ubXO063V0NEWD9cQQneNJvHeLmMoWFZuLCFWBWwsSQghhBCSEYqWioFhvkgJW7ppcoUpJJIvfYY1jiuxwrcEDP1zz7FeIoTrE+u99yFGHnm+2nSsN0LFFSRbq7LYpICHpSmsUWBg5Tm/9zxThBBCCCF9hTktFYBqUSN4HJI9eRa3dq5H01CzaOHkYrxJJkc1sAdqFg1gfAt4JuzKXobH8JzYLFIEi9mOXfXLFiw7J/ckT3UwX46KScI/BlrsDVDAwE3UT+30TwghhBDSN9hcMjAIgcqaB/HI6l/SlP0fY58Gdod3GSd/S3eol3HyJdNMEQn2xpNkvC3nOB5XkNg9TKYQc/tIC/XaqFk0RmjYfI8g9IWLmRLI9ncXSdwPiemy/9QIFeT61FWqmRBCCCGk8dDTEhBUisqTuL2DwX+s/TXlg21+E0TLRzqJ3uq38tuEED+PzvZfwnsjGP32MX946BzAS7O23spTpetCxsnKESy+v/eJnouUzvZZqdIjM7WuxarkfhJCCCGEdArmtAQCHopXBbb2Jj+jgn26CznyVO0aQjiYbvMLq6O88Bj878FLMcZnpxAnomACfIRk+1CVuW6wf8MMnpPQCfuhWVuNMpfwLDG3hRBCCCG9hp6WAEAcFM1BOKuwW7oWF0uPN8UksQ/w8yuU+01rxqj//ncjZOk/m14soIgAmKOyWCgeIm8mS6hXkwWLQOGDFUTkwulnQwghhBDSSyhawjApaQwHbzQIITRASNRHtnDRCfbWR7MY+toj8rP47IMAeSAX8IyUbd7YRcx1muI80ctCCCGEkN5D0RKGccmtHDRMUZEsddVd59OYSmQQKBunz8gU2yia4B3aQ3EVcJsvkcjusnZyZ2x2KMVchipyXDbOdWZuCyGEEEJ6D6uHlQRCoaznITVUCiJD//7PCyE+75T7NZ85xe9MeWIton7ZEUNfL4T4ZzrRHnksmlnN5X6/IoT4Ufz8a/juX8a+/QYhxK9DSJjO93bY3AYhbO9b7/0nIcS3oDiAPg+/He//MYRXja2O+x/ge75OCPFfdSU0NYu+JuPkp4UQ3y2E+H+WiF/g7/T5+4IQ4huwv6ZD/8bkAel8Exknf1nvh7Vf34zrUYTPI3zOVGN7JePE9Y4RQgghhPQKJuKXJFBzw/ft8sIGq4GjsBLIn9gGLMrjLiGctjDWjdC5cLcJtkco9XsNIaAN/lN0tLcLAgyRdL4Rb4WY8TJsIA4mCHlbmdyPpjdhxHHs60njYw3BZMIGV0zGJ4QQQkifoWgpiS4LnNMgvYeaRdK8ByP3SnfKT9n2Dob7Av+6IVYmHCpNsJThEmJoAfFxZSWKP4QYsss+P7cSyrX3YA7x0atu7474zMJdLxsj6AghhBBC+g5FS0lknNwGyM0wJYUHCGl6DPGRJjyMGPjI87uyXpSX8HAMreO6gTfHNMK8C52yhYcOk0PVK2Ok0zsAcjYc1aL0nOeOEEIIIeQtFC0lQGjW65Kb0eLkX6Nq1K9l9JCY8CGfp8WghcZ/F0J80XpPf8cfFkJ8hxDiryOnY2Hljkyx3Vt0xOdKfwDgMRvivB4SlPrajkyYnHibN8V+LYQQQgjpLUzEL8cg0HY+yGDMbmH0XniEzRrCw97GFV5/Bv9/bvX/+CHx1hj+aTWL/oXn+yhYwrFEmJ8RmPsaXF5ACN+FDCJc8JaChRBCCCF9hp6WEsg4mVud4YuStUP7c4iWtKT/J2gSeYP8kgd6tR7CRCe8F21+SQIg42SVM8/oKa8ZIYQQQsindNbTYrrMV7xCHaJbuStY0nJSlhAt1wjjMjkwd/ugK4rpUsZ2WBHeN94VclzyjkNeM0IIIYQQ0OXwsAESyr39LfJWsJJxokO4viSE+CUhxE9CHORdPU/jfasimCl1a0LPlqgmZozYkbWNpR3G5QoW0ihWTrPPQwwYokcIIYQQ8im9DQ+zq11l/LwJBXuJf0P1OrnR5Y0DbIc0lAIljwXylMZ5xighhBBCSFfpdCI+qnv9TSHEX0N+x6nleZke+HN3O0MYknN4Q0aBRAuN0u4zKXCE2oO3lHEyYhU3QgghhPSdz/Tg+H+zFgbopv5VqxfKXiBUDN8jhPheNYsGCMGaW93ay3KvEz7pHGOEFW5zvPTnf1kI8UdNfhYhhBBCSF9pradFh2upWTQRKX0sLEPPlJt9gUpdV/hcqocDgmVsvDFqFv2g85FRgIaSBpay7T6bAuPlCcbg9wohfiWPZ5AQQgghpGu0ytOicwMsD4hbaviJ838taBYoG3sphIhg+J0fWrnW3hQ1i/YZiaG8LKQfDBBamIdX+LstQwgJIYQQ0nfa5mlJID70yvUaAsaU/XX7l9hVte7CwZAQ3aQKW1smWncf5FPlPc5LjNUlc1oIIYQQ0ndaVT1MxokOpfojQogv4i1jzCXo+F5LCI3uh5KzfG0abCDYA2ScjBFS+CjH0ZrqdMaDeK8HDyGEEEJIX2isp0V7UTxGmq789avau6Jm0cj6bFTXajRCy0IIFsGwn+4Db+AriJA8mMp0+m93ahYxGZ8QQgghvSVYTouMk1wlhLW3wqnQ5XLlyT2Z6nAqW7CIT8Nv6gyfGWT4TFZGYTZDmgqEd5mePtdZqt0RQgghhHSZkJ6WOXJGhnaYFsSMFhpuad/JvnAXXV7Y817XKm3R00L2sXYFOiGEEEJIHwlZPWyIniOuOFm4ggXVuWiwW8UCSKcpGtp1gf5ChBBCCCG9ppRoQYKxYQMvyztipIPJw6GOZ8vE6t6wKHigukzyC90Vv+8nkBBCCCH9pmx4mF1WuC+ek1AJ0fQ09YeieVBDjDf2BSKEEEJIr/kMGjYWMsR76ikItepN0UIOYbyXDCMkhBBCSK/5DJLku5bg3gYYGtYfioqOJQpcMDyMEEIIIb3msxQs2UEltGeBNkfR0h/mKFucteyxzmW5uy/Zn4UQQgghJGz1sD5AgUdyg4UBt6rePnRImM5nWcg4uZVxErI3ECGEEEJI62hsR/yGoqtAaW/LSd9PhA8p5TmSxgdIINfhTbdKqV7n76B/UVaPid05fwAvzTlzoAghhBDSZ6RSigMgBzJO9Ir5o7LbUbNI1rnfVSGl1Mb45ED40w6ehqlSqndhcQXCCt9jHyNCCCGEkLcwPCwHMD6HrdnhipFSTpCb8+xAvob2TD0WQryWUs4hdPpE3kT6H+3Z+SGEEEII2QtFS356HxqmRYeUUofKvShwPj7UYWMIJes8yEe5QnJ9Vv63jJOzoqXICSGEEEK6BkVLPq6cnIO+soDnpCgXOkejJx6XYYGSxzo07H1W9iOEEEII+RSKlhwgz6DXjf6klNMQOT3w0OSpqNVWdPhckiMRX/N/IQwJIYQQQnqPYPWwQsyRo9C7MDGEdIXqU6N5KKUcK6W6bKAvUYggK0zCJ4QQQghxoKclJzAodZ7CdYnN5MlvaBLTCvalim02BoR4zTM2lrxBb5ZJl88JIYQQQkheKFpyopOj1SzaqFk0KiFc2pqrUCaPJY0zKWXXK7JlDSl8iHyfsYyTvBXHCCGEEEI6C0VLRnSDQPRouat61bcu5RULi66Llry5O/OK9oMQQgghpJUwpyU72jsy0V6WUA0mWwZFS3Hy5j+9QqhYHwoVEEIIIYQchJ6WjCCX5XuQb9A3wULq5yHPOSGEENJvdNVWKaWyX309IfS05OPLGROqD9GLxoqkEGt4WOhlIYQQQggB9LRkBInRIQSLuEs+j5O2CZcqiwd0tomijJNxzj9ZqlmkK6rdsiM+IYQQQsinULRkR4eHXYbamM6NqWGfQ1JlU80uN+wc5yxx/aGME+36fc2EfEIIIYSQT6FoyQhERrCmf22rPqaUWuVskpiHLouWqwK9aPR5fq7DCFvokcuElHKAOF396lUlPkIIIaRudINw67nbygJIzGnJR8imf6OQIqgm5oE74mtuIIg6iZpFcxkneTwmWz02utwVX0o5RoU0wzMp5ROl1OK4e0YIIYR0j5Tn7nOlVKsafNPTko+QhuSghQ0E5xV4WzrdER95KXlWNPT5GHU1n0Wv9DgTp2EupWQOT0PBCt0w5cXCIoQQ0mx8i6fP2jZ/09OSjwkM0Lx9N3wM25azoJS6hVr/KNAmXyqluhwaJiBCLnJ83hj03yXj5IfVLPrHFe3XsUibIPU9Neh4qGBrQMjeCPPUwfLbUkqB3K0VXsuqPah42N7qealt55f0E9xX7uLMbVOiDbBw5AvXXfE+ay8IBUuzW/U82poca3pacoC8lhAhYrpx4LmaRa0z0JRSV8i3KMtaKRUy3K5xIB8lb/Uww/d2ULAcgg/FI6MXJaSU2oD6GKGgefoFaXH+WAjxQv+9lHKD2OlgK3naqMI+LlGsgvlQpE3oENjEeX3cIC/zxLN/SYnnGGkGnXm2UrTkJ0Tyki5r29pBhBjIJyU2cdmDLvgCKxhZvXL6nLxv/b+TBjw8a1vPr9Zdzm1qOgj72sDTl8czuI8zCJ/XUsrS+Urw8n6CfWTzVdJG0u6tpoSKp4kThu62GDxbbzxHsG1btAvDwzKCZOpQvVpGbc/l0EnTWJGd5zAgtLE6gbemD6wsr9Q5VqF9vFSz6M7rJOMkhBer6YyccXPToId275BS6mvx4Z7jNg1PVylieoDxPdxjlIXwiDB3hrSWA1USx/DCHA3sX5p904dFxq4zwjxuP3dbF+0ilVIN2I3mI+NkiNWGUPkcD1rYq8UL4iXHmNjcSW+HPIWrvlaHQlL9GGEzPnYwCBdqFrGCFqkFhKRcpSw67CAs53li2bHNIR6QtkiPyq7o6VAzT/XC0tslpA7wnEysr9o5nvgHSqmj2QSexYu1tQihV+S5aHAkfHOfUkr26RwYGB6WEeSfhFwN7oy7VRsNSqmxntRwI70HY0KL4lOl1KjngmW5R7AI8+CiYCE1s0wRLC/vcu6UmuZNvtWf155UPR8IIT4HT+M1hQUh97wVbiGeY3ub7dCwteNVDRFhQkhpKFoygmaQoSaVp13uw6HjJ2mkvGGeNUegbQ1HSXvBqqpvXOp+OZMQlYIgYLTwYegfIffDG91n5NGS3aWUI8frc+/53dZmhKRbMKclAzAmPw64SVZJ6gEIKVztyWWxeXhXRSZObjA+7kLKuhJCSJoDjA9fDgsbfBJSHbZouUuARqlww4WutHekEDF3YWGJZ5DtiWUyPjk6FC3ZOEUS+RwTz76k1SxQtPQDneT2KMeRvknIJ6RCfMLkOQULIZViCwAjTK6dZ8So7v5tyEOzRctOh3h6CgcMkANHyNFgeFgGTD6LmkXzQKsNNA76Qd4QQD4QSKWgbLAbn75FGXNCSAV4+rAY0eLO+cdYtHJDw8w+uYurDF8mR4eiJSM6BwVhYllCfQ4RoqM+aT5upaNDMPafVI1vjNW6sktID3EN/jTRcnagNHIVuHOC2Sd30Y3Vw8jRYXhYDiBcnh6oBEWI4XlO4TKScfJCzSJf80VSEnRmT33w9qR4hC9ckZ7fEuwZV5tjlrA9BIzj1MiBKu4HeBx8Rnmjz1UA3GO+EwS6WIWU0g0RG9flccH1sL97Z/VRc69HqKazhenx+Gktewo4FLpmFC0ZQenaeSBPC+kHi5yi5Qy1+ztNyoNnFaJilXg7SQ5hSJ7juw56N62k2BsYFSv0F+pEDlrKw2PdpOM7YEj7hMHASWZOI5hRg30cY1ztbayLfbt504fp087UtYF9HVr3wXnG8rXbECvrEHQjvPbehzhXa+u+61K4rHsu7XvuypPXUleYmFux7M051/eLe2/VXSigxPhZNmnuxnEMrSa8ImXuMF3rb3EcmwJh5mn7UPVz1xzbIMvcKN5esy2u193r0Phic8kMICzsKmCt8p2aRZ2sxGEZjMJMHl0x+oog4yTvDfZczaJO5xd4mqyJMk0CYZiNMO4OTpQFuIbB2WojCmVN3ea4N0qpxpQylVKm9Y4py/MyeTt44JsV8DLPAf2AnlZV9MBKqjb3Q9FQ5LLny5yrMqvzOzx3p21fRXfHtdsYUEp561yr9+oQuFLKlXON3vlez+9raeaK8TMuORccdfzAiDfHEbzPTd7mkqGfu+LdBZxRwGO8RlNj734xpyUb08CDrpMJ15jgEngXnsFA2hwhRrdJXOfYl22oVZU+oB9sUsoNypE/q8jYFVgF/UiP75b3KvDdhxxvB4DYWyEsuOxzQP/9Kz1uQ44lvY9SSv1c+URvH2O2TO5kIVGljwnPgVcBwolOENmwQkfwNmPfez5vumsTVN6zBUa1fY22HqHkLjhWOv9pWwEC71WA+dyMn9d1jh99XqWU+v55jedS5xpzYr4xz94PAx+jnrsSPZ95ClgwPCwLahbpXAPXhVuGzq2kY2XE95A6QVhdXxtTLXKMmzNPHDFJZ98K1s4KE1gZd7vP62flJBi39jBluxeYTF/qBowduS5NS65d+BrbAZ8n7TLjPVPUizffU+J+DWNz6Y4tKxRjiFVId248w1gq5dGwmOwx8kz4xebAeTD3wWmRlWkYhmnhsGtc29Wec2XOlztf6mfIM4jHYUs997aA9C0UXDmh53XktaSGhlm4ns/K5osM4+fQvWbGj8/DWPn4wX5M98wXOysMapUWsmodj31cg4aJn337s7ZC2+z55tYJ/R1Y4XI+2/ERFr2H73j/GB6WDRknrpu0DE9RPrkzeNzILrW4u5uEjJNz3LR5J5vOjQ+bUG5qTyjRDoZR6dwBeAcne3LYLpVSR+tgXYSU896o8LB9pBg1lYWrYLXUd/113PkkzxjDuZ+mCIvSYyklrO6yrtCYPecq9z7AaJvg5Rqf67YJF899573enhCx96sMScVKuf1suveMllJOnMJDlcwXNY6fLcZP0HsCz4tFig10g2dS4ZBQ39x3zPAwnOMNzu/WCMqi4xULh5MUwbfDNbsbmwwPO4BOwJdxsgxcOaNTpW09bmYfvSrnK+NkDPdwXsGyZjWnwugVuFzGZBp6GzAsHuCauDzuQMiK5qHPBd93UoyoHQzJYd4xpg0DGHtPPeFBj/F9QdHj94iCZQ0jOPc+aEEC79O5J7xWP2eWLRuzrnci7Xy4Bl9lz0wY2fazaZ0ypt33gofgpoyfbUXjRx+zN+yoKDiXPhtxC1Ew7FrjXiwaTDEfnuO5W1hg62uM6AXf81YLo4W5ZhQth6kqubdLZJlc+xYedoVJK081sAdoYtrbwgVNA5PpACt+Ls8g2NtyLGkral0JdQsCxKhPsAzLrnwrpUyorE+4tMpzJ96Gz7nn6tpeGS0KjM+R5967aFmItTtHpJ0X17te5UKfO9bSjOq08KUgpNxr2mgdVDx+gogIS7C4Hp1LHENny+jruSy0JxACdegRLhfmOUXRcpgNjE+SThZB0ivhp4WHmkXneSZHNYs2+lXtnpEiwOviK6rQNm+L7xgmbRJfVQIjxA1B24Uwwg3YjrfJZ5uuA3IE3HCOa20ohgzfwr3nGp4ftqgohruf3nODcWHbGic4x1WQJZ9FpHg5ghTWwfVz77Xg4X8p4+dR2XO7R7A8gYeIi48FwHnzLexQtGQkdOUw0cFk60wPj5ZXXsqFjJMPUCo7LSnP5b3mHQVxGKeskLcpVMWXK3USOmSixfjOzzR0Ph5WYJ86b5+0JTQUY8U9V+sKq15NPIuHbVkweOe+OrD6XnkVMRjrtqG9PhCC5a56h6oG6o71bYX5Sr7xUzZvdOERLE+7Fgp2DDAG3AiAOxFP0XIAXTkMq5Mhm/51RrRgtSFrac0+hYj9JMoBZuVjGScM02kwmEh9K5KtKekNg+nG8yuTK9BbjwsWVVyP8A1CuoKD7boG4cOWLO74+tVUtrpsxdDbtOVc2bkOh+wI1+B9VMFiguthODS+3WsaoumobzG47vFzVtTbgv13c1guq5oreorvWUvRkgUIF7M68kQnH6Uk52alS56WPAZbn/u17GONhxnPT/PxTaRtE+M+j5HAQ3iFikF9xLdyX/W58G2/0effqs5kc1l1dUisYLur5Y3OA/L0KNt7jjwhYiJkbovVfNTmUF6C6xkK8ZzyjZ9K8z9CjR8s7LhhbVvmBoYFQtNdYDunaMmAriBmrS6MrL4PRemraOmFpwXjJStrrHQt8bed7obfAVqfWGklO/qEi/aavkDzw9YlhhcFxqXPy1K1Ib70LIA9arjHyw0vEjWGatVWYSsQWSuH2bjelpDH6F676wzejaCeFswrxxo/riekiCfLu7jBHJZKcJ+3DylaDoDStWagX+IkjllR7A15hMhJj8JPXmYMKTSx4aahGt3LDaYrDyYY48M9RUZM5/ZbXSGqB/etT6DVdS/6vqfJxri7onxdR2ll4Br0Jw0PEXMX9YqIlpAhYnm9LMLjHSqb4+vuw02N48e36JR5/GAedKud3VTZT4e8C0XLYZZ3iZizaKBm0RhN/8quvnXJAMjbv6bz3hZUDptkPNYza9XpccfGBmkwEC6DlIpihhMUk3itG8jq0LGOChj3Xt3VaIh4Y7dr+u5cpPTkqi3xOMXz1eRnStZyx2+AAe9630qPBwifR9Zbu4yixVf2uNA59+yDOML4cRcT8xyL7zow8b5GKFoOYMrQyjixB/Z5iTLI12oWdWKQe+J1s9CLvA0ZJ6OC8das4ERqw+plEKUk6NtcoDu2ETDjLlQcwzG4hnhtYYApsdtN9eT7DLy6Qybdc9Um0ZLVo+DaCCHyJe6VOc7iOU7xghRduPBdq7q9FK5wzGOTuOdwx2ph9ULRkgGEiCUyThQqPC0w0ItUFOtS+A9FiweUOv4oR7ljARH8PIAXjzQcKaWu0qUCv0oZblbH9uiA58WgjfxXQohPdEfrlpczb4Ihfu/7GnpO3X26aUDIZJM9f++Izxw5Uq4hfxHAw5mpN0sK7iJtKNGyPsL4cUVYJpskxcvIsLCaoWg5AJKqjdDYYaVxgq7lRQZsl0IrigiQzucCqVnkc0Hv4yU64U/ZDZ8cE4gX7Xl5ABGdxaP8+G5Rp73J+755rO7FA59IauICT65qWBXhnqvQfdSC4BEZmaMz4N1wPUqFQ8Q8Bnfe8MdChr4H9++OUdjEPZYyLRsoWgKgF2h0+WldShovvbC39EWrULTsQcbJOQalmZi1h+Vzdx2k46TozdYlT0OhYykYVtY2sj7Mt/jsAB4aQo6ONpqUUrqp4jkan2YpLGGS9zct87zcu++qLr/qwReC08TQO3elmZ7hdIqGhhncsKMyCwJlvCzCc52LLr6691ojFukyhrn6ns+tryZZJxAnExR3WaLQi9KLXohOeYbXQ7zuLUh8ttNnqCTIZfknahb9uPhUxFzB63JindS8dMkwLeo1GfTgYZfV4DhDmM3n6GUhTQQhLZO7xZpPm7GNPBV0bM7geXmJbvJNH9fuvRqykXAmtEiUUrofbZTwSzHsKqv6hO8b4PrY/94zmLUnocYKVFkp6xyMTzEAABsHSURBVJW6wrPBcFHiOF3RkjdM3b2H8xbgMbhejcqM/jzjB+8f2hf3em5Z5ng/WKAeYS4LEmVD0XKYn7M+MQjgiu6EsV4yvrbTHgUUbcg7qY9YhaQ3TCpYRa9lXkFIyRUaUI5TOqMbdE6XXlkbNvzh7l6LY83R26aGOoGg8/Yeo9JXGOEQ5w3sf+Y+I3PdA/qekVJeO9W2xnl7msBwtMfVtkD/oaXbUFFvN892QkdYBB4/WShSvrp34DpPUvo5+dhhzt14XmN33FG0ZEAn4CM5NYSh0ZXmgWUmoM6KFuRAFREfDA3rCVU3LKwDiBC9WjtHHss0xeDWxsOy4cKlCgOnCJuGi5Z77Aujq8Go3FmNnptoQIbI37gqK1oChIaJFMGV1x7K9fmaRInJG8oyflwDnKGRFngOTA5cmx3ug5X5d99zweN9pmjJgD6h7yPeLgTDjiRvlTGyO5uMr0O8ZJws3NWBA+zQ14WQ1qFLfkopr2BM+SrmXUDIN717edNo/DyJ3KU6RMk7/7ZE+IfI37BD0jVneT0cHtGSe1FNf19K+GLZ8K5ThJy2cfwwNOztHLDYs+Cyxu+XIc47RcsBYISGXMX5SMZJpGZR2xO4SnkGCky8XYbGHGk1WC2boOLLwrMqqbt6j9g5unMkJQ6o7aLkEO/cA0WOCSFiV04O2Thr3xYIAns/1iXOrRu+GKISapnF4NrGTxf6UVWBTqhPWajaQWwvQueaUbRkI7RROepA1YmyE9Z5F92r6OOTy8vCLvikK2hRAkPJZ8xOWSK0V2xT4tS7IkpS8VTPK9qMWuCesUXLKEezSdd2KZM36YYvVv3cMuOnCaKW4dsWEHFLj0fMiJV5VeHAFC3ZMJU2bi1D+xwTwqMC2+vChF3WfTvoqAGTpyylzpMas2oY6RI6z0FK+dwj3i/oYc1FGUO3Lta+JNoGVvKqm7Lljt+AhYCdEyI2PFSWG4alK1rKPHNXTshiiPDFtoyfvo/nN+wRLOu7fnMVXzuKlgzAqJzKOBlhtXClcxBknNwWEC3Xaha1ukpUoCogbe6g7QVVw/K4kVcULKSjzLEa7IaJjRq4aLPL0WCuTtpgKE2O0NOmDbiipeyY94WIHTrvvtCwMmPq3rMqQKnpVoyflJLkfWXuESyXSqlaGguzuWRGdKNJNYuu3lTM+bTxpJ6Iohyb2ZVsENUUQriFuxgSdZtDtKwL1MonpBUgNMC3ONPExQrXoDxW/HrTQ1Da0gCzCbjjvOzilOshyRKy7n6m7PPGJy4yP8dTxEmbw656FzKGsEe3R9c6R7hiaShasqOFyhyTzzkm69c5ExE3HVlZD3Gztqq05yHQeHSScXV0h88yl4V0mbauwB+rBLLr7WmUpyVlRZ2x/n7cub3UvYACFna44Alyx7wghMeNAikbju2zXcpe/zaL3j4Kdp/wHdVZzp7hYXtAzw3TKMdMAL5KCVm5kHGyvLvI7RYvQR5UWeJyW8QqRwL+Cjf/RsaJ/vlKzSLG+ZOu4ZvjmljGd+nuV90d1j2J26Kh4WFrR9RRtPhxF+VCPO+vHPtjtEeIuBEd12UNy5Syx3kX3m6ce61NYeLuvvdq7CMtwBcWVus8RU/Lfs4xKQwxYG/KbAwsOuBtCbXC0BlPg5pFUzWL9Iz+MsPHH8IguYLQ6UrDUUJs2iLEm+BB8M2FTTx/7rnqXG5iWXw5n4GKT7jhlvtCxEI0lPThFofIe5+446dNPdvcfdferj5FS/jGW+3FlCha9oDV74GaRadqFg0Dxe11wbMQaqLp4g0/RfjXIR7hgf+kI3lOhLj4DJp1A8+Sz6Cs2xj3fV8TRYv7/DoJVJilS7jPtSBV4CB83BCxe88OGNL2ivguoHHpGu55r/09+2dfmFvDaMI8cUx8YpyipWmoWXR3k6Jy2Mcld+/GbK+tBG6y1LmHHbxoWYSp6c9yywpipKP45orGjXUYg+5CQ92G1L2+Hg0tG+yb22pLwm0J7nMt5HXMkpB/z8sSMOfANdzzVt3zjZ+2iJY273sI3Pn8KAtQFC0HQJUwEajS00MZJ2031EPuf1cT2bIc1wnOJcuFkq7SFu+B8BiDZ3V5EPA9bg5EI3tYeVb7NSN2DH8Hd9yEHPOuHfLIc+6rCg0TKWWPM3sbIMRdY/dxG8ZPytj3nf++cJQFKIqWw0yQPB+q2lXblXnIkK42xbPuBZ3wzb9Zjuslwg7pZSFdxTfXNVWk+wy7ujwIvu9pcuNdN7fihN6Wd3CN2GBzfIrR/+Y+8wjgXeAQHp8Ay2sT+Eqht2X8+M4lw7trhKLlMLeBjeu2x0AGzUPpwioFvHF5jTGKFdJZEGvvLvTsmipaYNi5IWKVrwAj/8Dte7BteFVFX9TBpGdJyftw7YXQ13JfQn6VXhaR8twqIlrce+1ZS8ZP2tjvo7flKNeLomUPCOWiin6X0CETXchruct3QvnirCtGHFekk+AB7quIFzK2vgp8BknVDWB956nRTWdxDd0qiScpK+i9IsXwDj3mXSFihyiFbij5DiliOtdCLMaPb78aP37g6bp03j7riafRHcdnxxBrFC0pYPX8FMbl00bu5HEIPUhbvzqnZpGegB+gYkvWMMJVB/KbCPExT7kPypb2rroj+zzF21KJdzylu/S2Jca/r0riQyllowVXDdx7ngUqd2xvzxciNoRgsu+7bejvBu51L3IP+u41PX7aMvZdnvWgil4jChFQtKRzigloxQZa7xA6D6X1okUL3JxV4daYtNnjgHQKGB2uIa55HqAalu/vgz00sQLs9RCFXlHE9nwG2rTh3qg7sI8+b/GHvjK8PeJeFbiKDt0XIubeC1XlRblCyG04eJA94+dx04UL5rHnnl8tOy5cfOOp9h5zFC0poEfLBjeo7yFcFHY+f5cuxIKOZZxkMch0c9L38HA5hYeGkNajjXAp5VXKXLlWSpV+uCE0xecJCbbwoZSae5oIn8AgCTJXYTu+4i66a3lrQqyQB+SGymheacOzp3H+7jFXVbbaHSdDz+JqVWPp3jEVMdYxfnzNmB83ffxgPnO9XSddFi4Qa+7ceFa3d5Wi5TChqoatoc6bXBVmLxWFSXThBt9kHCf6WI1Xhon4pFb0/QtjIOh9jJX1FRqmuqwDexR9hlhoT8jII44u7kI6Sxok+PulZ3V628Y8N6XUOEW4PMb5Cv7M0OOtwavxVZY7fgM8FdfWW2fOd68rCg0TKUKs0MKBUmpypPETwtAe7hEuXfU2jj1zo/au1uZxoWjZj68ud1E2ahZN1SxiX47u4as85ENPaB/JOJlzHJAjMIcxkEgpN/rBXdQogGdFP/y1AfMqRbTfCZbA4U6+WPiLkCuc2N+h53vO7gpuSDnNK5JwvqZoUOwKFv09ozaEhfnYI1zOMNaWZbue62uL8WrGW2W5RiVxx2CV19RdALXHVZWizieGCt97GcdPKRHgGT+lwxitecInXF5hv0uPUcxrjRjr8Lb4ig48w/GGDve/t73PBv6CLrIMFB7WBVd5FV6R1vdq0b1WZJyMMLE8O/DxHavskLrBA9o2arRB8CEe3gJu/xWMrDRBPcBDZJghjl2vAo9DG+L6oSmlnMDwsLmAoLiEMbcs8916lRoGx5VHkD3DQ9p818qXr4MH+BCvtGfIGuep1WHD2vCEQeib/x4iydqUvF6aseYeN8TgAM/LgRX25Ou8vmhSTiT23d3PKhenrjz3gf27qghR9vgdMH70WHjh+fVDq8iDGTvLjOPHjCHf+JmWfRbrOQbzxMLjaX4I0WWKayyzljLHNofw+ubOGaoSHcKKZ4Y79vTxvjbzYtH+QDh2k6N1bzFMKqWadD4aAxpKmmTpTcrNlAfdTLDVZfGwUnjIKM+NUkpWv/fVgGaSecbGc+1xa9MxhgaTUuJsNsrbm0Kv7Dii90YpVfmKlJTSnTSfh8jZqBLkm/jCt0KjDdNJ1bkZEGFpBpuPQtfISpjPcu62eFa4VZzSCCbsPPfCUeZVrArPa1yMeq8pgi9lXqt0/1Luax0aVmnYtWcODDL3tnn8YDFlmiKQbNYQfreW18qcu6xzh64Ml0sohnruOttbHNhfezFs4wktHFhFr84zXPctPS3pPOxSx/ZA9DGxci86mV7GSR7R8kwn7atZRG8LqQ2l1AgPmXHgwiIGs5o4ryPMCat9t3vKK4f6Hv0do4wP6LOM+3KDKmGdCxGFATiEqBxX9AytdazloPJyxx58grqOxOidY5wHuc7W+BlCAFQ5fhYBKhq+QRfxQK7VBK808WJ7TvIuJN1gv49uP+j5CyJzgnvdN/eFsKN38BzeeW/oaUkBjQJDu+XeQ1WyVuJbzQtEYbXfBFA5LIuxYsIjNm33upUBYTNuPHHuBwgMI9tQ2NQxmXuSDjO7/ZsCcgxM6E3Re3qL8Vw4FKAs8ISM8ODcN18H8YZZwm+UYUXVxpyreRWGrOdeEE3w/uFeN6EeRceZHVa2bGoonRXS84Y6roFnPqpczNU13gKOn5UVNlrL+MEca+bZogsrW2ffC4usUM/dPdsPcbzCul5LhN6+82yhaEkBosV4FuwL8LTgDaQvxCBnP49GQdFyHxkn0wOrKjZmdepzOg/mSLtMyD3wQDu33PXCigsXlotfvBHeAVcpQ2Elvpp/vbHvIcAq47l1jsy5s8MgVmk5L30E1+fcMnjTxpg5h6u2Figg4cH4scdM2vgxoVeNmKdS5lfz861T3MAcR2vHvpVblHavu8ds7veD14uixQO64S+tJK5b/PwCfTYEqsBkZXdXRafFXhZB0XIPdLTPMw7EXezvLGJTSUIIIYSQHLDksQftDVGzyLglF/j33Arv2njK3O1j0XbBApjj8y55K6bs2tiLgRBCCCHk2FC07AHJ0htTGlQnhsk4OUVoT5668x/KOKGx2iHgjcvrdl60OTyQEEIIIeRYULTsAeE/bqWHpRYuBVbM85TnJM1ngrDBPB63Ug3WCCGEEEL6CkVLCvCM+PIstIj5pEC/kpvKdpYcgyskluUpL1lZaVZCCCGEkC5D0eIBHpY58lleBtos+3J0AO1lQ2iYgKclX4OnT710hBBCCCEkBxQtfs6dqmEh6EIi/rYB+3BsxvCyJBC2eTxuWzboJIQQQgjJD0WLn1vLIA1VMWsBD06bqSqJvE21yO2mo3m72c6ZiE8IIYQQkh+KFgfksiTwsFwG3PRFBxKxKzG4m9rh2CDjRBdfML1Vinayp5eKEEIIIaQgFC0OKHOsK0JN1CwaBxYube/sW0UDyDYUKFhaYuVRQQFyy7wmQgghhJBisCO+ByRLL5HXon9+HWCzre+ELqU8D3QubJ4rpaaBt1kZMk5+TgjxjQVzU35KzaKvtuRQCSGEEEIaAz0t6ehwrjFyEEJUEGt9N3ml1KYCz0jbvA8xwuTOMr5O4bXTgu+HG7D/hBBCCCGtg6IlnffRAV8FrCDWBUKKjBsIodagZtEqZyW4E9OIVM2itocHEkIIIYQcBYoWDzAubeO0jJdE5z9cV7KjR0AptQjobRm36uDfkjXMb4frv5Jxwm74hBBCCCEFoWhJZ2BVEHuAVxFj/XNCiO+va6drYgyDvAxP2uZlEW/znbI2lDxBCNlIzaKrineNEEIIIaSzULR4gGE6h9F5l4yP3JYioVGJmkW/IIT4i5XveE1AbAxLCJcn8Ni0ChknExRoOMu53+zNQgghhBBSAlYPc4Bhqj0JPy6E+DqUqtXv/ZgQ4t8U9LboMLMfV7PoX1a68zUjpTyFkMvaZHF7V9xAqSpKJ9eCjBMtZj/M+V1P1Syat/SQCSGEEEKOzmd5Ce6xQeWwb7TyWnRJ3n9QYpt6Zb5z4UFKKS3oRiiFPEE4nZv/s8Y5vFJKtfocyDjJGhbmUqQ8MiGEEEIIAQwPc0DugQ57eoZchI2TMF60s3lRg7fx6HAxpdREKTVUSknnNVBKjdsuWMAwh5elbM4PIYQQQggBFC0OyGf5RwgDM00P7ZLHQ3gP8tLqxpLkTtDqULjnGU/FAONkx5wWQgghhJByULT4+T7kapzLONHC5QU8LE8R6lMkJ4OGa8tBeNizDEdxAw+dzmMZQuwQQgghhJCCMKfFQfdogVBxjdMVxEsRbpDzQdrNKa7l+YEKYnd5PRQrhBBCCCFhoKfFjy//JGuFLB9X7IbefnQ3fDWLhk64oBcZJ3fhgDJOBiUS+AkhhBBCeo+gaLkPSh4/DrxZdkPvCDJONhlD/RIZJ7qe+MesHkYIIYQQUg6KlvuENjB3TvUx0m4mOctXP9AeGl5zQgghhJDiULTcJ20Vfev8m5UTipbugJLYWYStHifXfT9fhBBCCCEhoGhxQPK0z9g0iddFPDETlFImLQR5KXfXT/+csXy1LubwX3i9CSGEEELKQ9HiIONkfCDp/qTAZk+Y19JqtFCZI6F+gnLYh3glhPhACHGUAgwyTkZaaOkcLZ1bI+PkSr+35/M/a/3sFdgU3oQQQgg5FhQt96mqNDHzGloIDPU5ijPcwoNySIhcozTy6BhV4+AN+gihjlM0xJzC4zdESW/7s5pfF2+rnk3w86mpggZYBY0QQgghR4Gi5T4bGJ1Fut6nwmTs1jKHp0wXVDjXTSPVLJpmOBj9mfE+70YRtLfHbBNelHfypfA7LTQusd8T7O8thNfKEdBGtEw9oW8/hOO4g2OYEEIIIcdCKqV48i306jIaTG4ONBDMy/OMxi6pGBj62rhfqlk03zMWtGfhNZLqTyEAFjJOflEI8U0ZQgVv0NclGDJOFvB46P1e6v1C932zz6cQ3gv8boz3r1AQ4jxNfMg4matZxCaohBBCCGkc7IjvYIXzhBQsmm+RcfLH1Sz6p4G3S/LzB4QQv9HNTTGC1XrLiMxTCIS8YvZgDggE1AqC4hY/m++dQyR9WQjx00KIr1g9hHTX/fdsASLjRO/X+xBTK6cj/xhifLAnVJGimhBCCCGNhOFhHhDHvwu82e8SQvyUNnr1ajkSo5nYXCEIpbqXh6Fm0V8QQvxJT76Jez1MaNcJijN8lFPMvunngn1Zmv2RcfL38KtzfI8RE/o7LvB6JePkFmJFi6a/IYR4KoT4nCtYgH7/BX5+p2u/dazLtJ09Rv4NIYQQQkgWGB7mAWJiitXvItXCsnKJUB4T3nOF5O0s1ak6jcfrceia/VUhxL/ShrwWBjpkCuJTG+8LeBn0/zf43akJlYK3Q/88xWdWEDCvS5zjd0LDrFCzNfJGPkHu1ADX3/x7cWC712oW7asCNkTo2BXDEQkhhBDSFSha9qATna2V6zrYWeFBZhXdGNZDiKghVvtvkGORmhwt4+Tb1Sz62pFOXyEgIAYwut94BWSc/B4hxO9Xs+gn3O3KOPl+hDr+T/17GSd/H96L71az6D9Yn1tZlb+0iDhTs0ji3CbIXdngd1pAfljiUMy29PH8Dr0fyCvRHpuXQohvFkJ8h+fvfkYI8QVcY1MMQu/37xNC/G3s15exjz9i57MQQgghhHQVipYUdFJySaO1LBEEykCvrFsGr82TfV4Znb9QZ8Wnfd6RrPsCYXGhxYS9XQiAK5NYbm9XCPGx9dZTS2iuUb53BU+LT4TewKtyyMNRhh3yZ0ZWeNkagmbhfPcDeErMtb5XwAHHbLwtCwoXQgghhHQdihYAQ3CJ8Kwl/n+KlfllSpjYGp/JmuewyxFudg2DW4cUPUGzQpf31Sy62r+ZerA8QRNXuMg4+U4hxI9Zieb3PmN99hSfGRmRA8F2r9IXQq70dz7DW5fw0rgCZAsBOLUS2Y+JKZ98i5yVE+z7CIKFQoQQQgghxIKiBaAqlIBhPTdGLvIf5taquO19eY7PPcz4NQ9y5kmsLQP8VxE6ZBvdRth8kw4DsxoB6mO4dUrhjrD/S3huRkUFD0SEeY3gBZnAO7C1kr1H1rm0z9HW2pclhMoPCiG+D+fZeEMu8a8+5n8rhPgVNYs+wPefW9vOUlb4Twkh/k7FHhWXNc7RwPGSrdUsukuUx7GPUCVMv/dFNYt+pMZ9JIQQQghpPBQt7yZJG4xYiGBUT7Ga/wBGqDbSv0EIofMlPsjhabmGZyaryMnKDQTCEILlNQTV0g4fg/gyieamYtXQqjRlr+6fesKSzvG3xlt0U/JYnjsGvUlMTzufW+y3CQd7CvFyMIwPuSunSICvmmsItysjHJGrM8b5eoqCAI3wkhFCCCGENB2KFoCmfbYX4031Jxjr56bylPN3pyYsCkZ/KEHyFOFMWcPJtia0yPJ03FrHYLwepxm3aXJDXmJ7Sxzjswx/WyW2UNpCpGXxnhwSRGW5wfZP9oXtmTLXLC9MCCGEEJIdihYLeFSGVqfxXN3BPR6bqrmE52cKw31nlc3dmTAxiKpRQcFxCbFjmh8eW7SEIC23yHhIRmYMHPDimAT7ueVROXW71BNCCCGEkHJQtKQA43MOgzRTBa7A4UdZk/ZDf87HE3hZ7KID2wq9Fi4hv+sunwR5Mfp4fidyae6aPtohcboZZIrnbGeNDXpMCCGEEEIqhqJlD1ZFsalbucoHQrBMb45jlksOwQ7bSBM6a5ybOo7zObwfeZPoTcK/qQS3zCM0PKKFYoUQQggh5AhQtBwAwkXk6XcC8fIRQqvqKLFrOuvXHbpVh7fFiKclQvd8IsqEaRkhYZpIrsqIC6sAg6kCRrFCCCGEEHIEKFoqwNPw0GaLn42xv68Cly+ka+tJpt95yjG3nS3Ex8YqQ22aKi6sHi4Dt7wzIYQQQgjpFhQtFYB+KYnHE/F/0O19g9AjQ56KY0bIbBGGdlUiV6VK3EaPL3VhA6vHywaek1N8TpcHnkOEDFkSmBBCCCGEGChaKkTGycSEKmnPgO7VYfqmIPToFK+N6euxR4C4AsiUOHbLImcN2Vo7OSK7lP4rhxL410hiP7E+r5sl2qLsrrIavSGEEEIIIaQIFC1HQsbJtwkhvl8I8Wetcrk/K4T4X0KIP2clfbtld20RYXqP/JoQ4uvxnhYL34r/6/f/oxDi252j/HV4ab4N4uTzqKj1A0KIPyiE+Hk1i74q4+Q78fkvCCH+kP6cEOLfCSF+QQjxe/V3qFk0RtW0Abb5P9Qs+oEuXjNCCCGEEHIcKFqOCLqk3+VmwBMzQW7KJ/B23FrhU0ao2Dkt76MU8QIelyVEhKl6NtGeHYSrad4zXpi8PWgEvSWEEEIIIeRIULQ0AFsMwGuxgDDxcQuhoitZjczvkSsytRLU34SiWZ+h6CCEEEIIIe1CCPH/AVIyKMxbg+goAAAAAElFTkSuQmCC" alt="in-Store Media"></div>
       <div class="sb-ism">IN-STORE MEDIA</div>
-      <div class="sb-name">Com Flow <span style="font-size:10px;font-weight:400;opacity:.6">v3.4</span></div>
+      <div class="sb-name">eComFlow <span style="font-size:10px;font-weight:400;opacity:.6">v3.6</span></div>
     </div>
     <div class="sb-section">MÓDULOS</div>
     <div class="sb-item active" onclick="setView('dashboard')">
@@ -505,7 +507,7 @@ tr:hover td{background:rgba(234,242,255,.42);}
 
   <div id="loginOverlay">
     <div class="login-card">
-      <h2>Com Flow — Control operativo</h2>
+      <h2>eComFlow — Control operativo</h2>
       <p>Inicia sesión con tu cuenta de ISM para continuar.</p>
       <div id="loginError"></div>
       <input type="email" id="loginEmail" placeholder="correo@ism.com.mx" autocomplete="username">
@@ -560,6 +562,14 @@ tr:hover td{background:rgba(234,242,255,.42);}
           </div>
         </div>
         <div class="gf-group">
+          <div class="gf-label">CADENA</div>
+          <select class="gf-select" id="chainFilterSelect" onchange="setChainFilter(this.value)">
+            <option value="all">Todas las cadenas</option>
+            <option value="SORIANA">SORIANA</option>
+            <option value="LA COMER">LA COMER</option>
+          </select>
+        </div>
+        <div class="gf-group">
           <div class="gf-label">PERIODO</div>
           <select class="gf-select" id="periodSelect" onchange="setPeriodFilter(this.value)">
             <option value="all">Todos los periodos</option>
@@ -584,7 +594,7 @@ tr:hover td{background:rgba(234,242,255,.42);}
           </select>
           <div class="load-scope-help" id="loadScopeHelp">Parcial: solo agrega o actualiza lo que viene en el archivo.</div>
         </div>
-        <div class="mode-hint" id="modeHint">Vista consolidada: une periodos sin mezclar Creatividad ID; cada ID se gestiona como un arte independiente.</div>
+        <div class="mode-hint" id="modeHint">Vista consolidada: une periodos sin mezclar Cadena ni Creatividad ID; cada ID se gestiona como un arte independiente.</div>
       </div>
       <!-- Dashboard default -->
       <div id="view-dashboard">
@@ -604,7 +614,7 @@ tr:hover td{background:rgba(234,242,255,.42);}
               <div class="dashboard-heading-title">Resumen operativo</div>
               <div class="dashboard-heading-sub">Lectura rápida del archivo cargado, avance semanal y volumen de materiales por gestionar.</div>
             </div>
-            <div class="dashboard-pill">⚙ V3.4 · UX glass + memoria operativa</div>
+            <div class="dashboard-pill">⚙ V3.6 · cadenas + UX glass + memoria operativa</div>
           </div>
           <div id="weekSummary" class="week-summary"></div>
           <div id="opsKpiCards" class="ops-kpi-grid" style="display:none"></div>
@@ -618,7 +628,7 @@ tr:hover td{background:rgba(234,242,255,.42);}
           <div class="card">
             <div class="card-header"><div class="card-title">Clientes y marcas en este ciclo</div></div>
             <div class="tbl-wrap"><table>
-              <thead><tr><th>Periodo(s)</th><th>Cliente</th><th>Anunciante / Marca</th><th>Campaña</th><th>Creatividades</th><th>Fecha inicio</th><th>Fecha fin</th><th>Fecha límite entrega</th><th>Semáforo</th></tr></thead>
+              <thead><tr><th>Periodo(s)</th><th>Cadena</th><th>Cliente</th><th>Anunciante / Marca</th><th>Campaña</th><th>Creatividades</th><th>Fecha inicio</th><th>Fecha fin</th><th>Fecha límite entrega</th><th>Semáforo</th></tr></thead>
               <tbody id="dashTable"></tbody>
             </table></div>
           </div>
@@ -635,6 +645,7 @@ tr:hover td{background:rgba(234,242,255,.42);}
           <div class="tbl-wrap"><table>
             <thead><tr>
               <th>Periodo(s)</th>
+              <th class="sortable-th" onclick="setEcoSort('cadena')">Cadena <span class="sort-arrow" id="arrow-eco-cadena">⇅</span></th>
               <th class="sortable-th" onclick="setEcoSort('cliente')">Cliente <span class="sort-arrow" id="arrow-eco-cliente">⇅</span></th>
               <th class="sortable-th" onclick="setEcoSort('anunciante')">Anunciante / Marca <span class="sort-arrow" id="arrow-eco-anunciante">⇅</span></th>
               <th class="sortable-th" onclick="setEcoSort('campana')">Campaña <span class="sort-arrow" id="arrow-eco-campana">⇅</span></th>
@@ -665,6 +676,7 @@ tr:hover td{background:rgba(234,242,255,.42);}
           <div class="specs-table-wrap"><table class="specs-table">
             <thead>
               <tr>
+                <th class="h-dark">Cadena</th>
                 <th class="h-dark">Cliente</th>
                 <th class="h-dark">Anunciante / Marca</th>
                 <th class="h-dark">Campaña</th>
@@ -745,7 +757,7 @@ tr:hover td{background:rgba(234,242,255,.42);}
         </div>
         <div class="history-toolbar">
           <div class="gf-group"><div class="gf-label">BUSCADOR GENERAL</div><input class="search-box" id="historySearch" placeholder="Cliente, marca, campaña, ID, faltante, usuario..." oninput="renderHistory()"></div>
-          <div class="gf-group"><div class="gf-label">ESTATUS</div><select class="history-filter" id="historyStatusFilter" onchange="renderHistory()"><option value="all">Todos</option><option value="complete">Finalizadas completas</option><option value="missing">Finalizadas incompletas</option></select></div>
+          <div class="gf-group"><div class="gf-label">ESTATUS</div><select class="history-filter" id="historyStatusFilter" onchange="renderHistory()"><option value="all">Todos</option><option value="pautado">Pautado actualmente</option><option value="complete">Finalizadas completas</option><option value="missing">Finalizadas incompletas</option></select></div>
         </div>
         <div class="card"><div class="card-header"><div class="card-title">Consulta histórica</div></div><div class="tbl-wrap" id="historyWrap"><div class="placeholder-msg">Todavía no hay líneas finalizadas para consultar.</div></div></div>
       </div>
@@ -760,12 +772,38 @@ tr:hover td{background:rgba(234,242,255,.42);}
 const MESES_ES = ['','enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
 const MESES_CAP = ['','ENERO','FEBRERO','MARZO','ABRIL','MAYO','JUNIO','JULIO','AGOSTO','SEPTIEMBRE','OCTUBRE','NOVIEMBRE','DICIEMBRE'];
 
-// Configuración del retailer/canal usada en asuntos y borradores.
-// Si el flujo se replica para otro retailer, cambia estos dos valores.
-const RETAILER_CONFIG = {
-  nombre: 'Soriana.com',
-  etiquetaCampanias: 'Campañas Soriana.com'
+// Configuración por cadena/canal usada en llaves, filtros, specs y borradores.
+// Cadena se lee del Excel desde el campo "Cadena". Valores esperados: SORIANA y LA COMER.
+const DEFAULT_CHAIN = 'SORIANA';
+const CHAIN_CONFIG = {
+  'SORIANA': {
+    label: 'SORIANA',
+    nombre: 'Soriana.com',
+    etiquetaCampanias: 'Campañas Soriana.com'
+  },
+  'LA COMER': {
+    label: 'LA COMER',
+    nombre: 'La Comer',
+    etiquetaCampanias: 'Campañas La Comer'
+  }
 };
+// Compatibilidad con funciones antiguas: Soriana sigue siendo el default.
+const RETAILER_CONFIG = CHAIN_CONFIG[DEFAULT_CHAIN];
+
+function normalizeChain(value){
+  const raw = String(value || '').trim().toUpperCase().replace(/\s+/g,' ');
+  if(!raw) return DEFAULT_CHAIN;
+  if(raw === 'SORIANA') return 'SORIANA';
+  if(raw === 'LA COMER' || raw === 'LACOMER') return 'LA COMER';
+  return raw;
+}
+function chainLabel(value){
+  const key = normalizeChain(value);
+  return CHAIN_CONFIG[key]?.label || key;
+}
+function chainConfig(value){
+  return CHAIN_CONFIG[normalizeChain(value)] || {label:chainLabel(value), nombre:chainLabel(value), etiquetaCampanias:`Campañas ${chainLabel(value)}`};
+}
 
 const ECO_ARTS = new Set(['BUNDLE BOOST','CATEGORY BANNER','CATEGORY LANDING','CATEGORY MEDIA_WEB','HOME BANNER','HOME CENTRAL','HOME SLIDER','MIS LISTAS HEADER','PACK PROMOS','SEARCH BANNER']);
 
@@ -781,6 +819,15 @@ const MEDIDAS = {
   'PACK PROMOS':       {D:'1920x259', M:'640x242', A1:'578x186', A2:''},
   'SEARCH BANNER':     {D:'1920x259', M:'640x242', A1:'320x93',  A2:''},
 };
+// Preparado para que cada cadena pueda tener specs propias en el futuro.
+const MEDIDAS_BY_CHAIN = {
+  'SORIANA': MEDIDAS,
+  'LA COMER': MEDIDAS,
+};
+function getMedidas(cadena, articulo){
+  const cat = MEDIDAS_BY_CHAIN[normalizeChain(cadena)] || MEDIDAS;
+  return cat[String(articulo || '').trim().toUpperCase()] || MEDIDAS[String(articulo || '').trim().toUpperCase()] || {D:'',M:'',A1:'',A2:''};
+}
 
 let weeklyRecords = [];
 let consolidatedRecords = [];
@@ -791,6 +838,7 @@ let currentView = 'dashboard';
 let currentMode = 'consolidated';
 let selectedPeriod = 'all';
 let actionFilter = 'all';
+let chainFilter = 'all';
 let loadScope = 'partial';
 let lastLoadSummary = null;
 let rawEcoCount = 0;
@@ -877,7 +925,7 @@ function overlaps(aStart, aEnd, bStart, bEnd){
 }
 
 function recordBaseKey(r){
-  return [r.cliente,r.anunciante,r.campana,r.articulo,r.cid,r.nivel,r.cdesc].map(v=>String(v||'').trim().toUpperCase()).join('|');
+  return [normalizeChain(r.cadena),r.cliente,r.anunciante,r.campana,r.articulo,r.cid,r.nivel,r.cdesc].map(v=>String(v||'').trim().toUpperCase()).join('|');
 }
 
 function getPeriodoByKey(k){ return periodCatalog.find(p => p.key === k) || null; }
@@ -927,13 +975,14 @@ function setMode(mode){
   document.getElementById('btnModeConsolidated').classList.toggle('active', mode==='consolidated');
   document.getElementById('btnModeWeekly').classList.toggle('active', mode==='weekly');
   document.getElementById('modeHint').textContent = mode === 'consolidated'
-    ? 'Vista consolidada: une periodos sin mezclar Creatividad ID; cada ID se gestiona como un arte independiente.'
+    ? 'Vista consolidada: une periodos sin mezclar Cadena ni Creatividad ID; cada ID se gestiona como un arte independiente.'
     : 'Vista semanal: conserva cada periodo del archivo para operar por semana sin perder trazabilidad.';
   saveFilterPrefs();
   refreshAll();
 }
 function setPeriodFilter(v){ selectedPeriod = v; saveFilterPrefs(); refreshAll(); }
 function setActionFilter(v){ actionFilter = v; saveFilterPrefs(); refreshAll(); }
+function setChainFilter(v){ chainFilter = v || 'all'; saveFilterPrefs(); refreshAll(); renderWeekSummary(); renderGantt(); renderChanges(); renderHistory(); renderOperationalKpis(); updateUrgentBadge(); updateChangesBadge(); }
 function setLoadScope(v){
   loadScope = v || 'partial';
   const help = document.getElementById('loadScopeHelp');
@@ -944,7 +993,7 @@ function setLoadScope(v){
 
 function saveFilterPrefs(){
   try {
-    localStorage.setItem('comflow_prefs', JSON.stringify({mode:currentMode, actionFilter, periodKey: selectedPeriod}));
+    localStorage.setItem('comflow_prefs', JSON.stringify({mode:currentMode, actionFilter, periodKey: selectedPeriod, chainFilter}));
   } catch(e){ /* localStorage no disponible, sin problema */ }
 }
 
@@ -1002,6 +1051,7 @@ function recordMatchesSelectedPeriod(r, period, mode){
 
 function getFilteredRecords(mode=currentMode){
   let base = mode === 'weekly' ? [...weeklyRecords] : [...consolidatedRecords];
+  if(chainFilter && chainFilter !== 'all') base = base.filter(r => normalizeChain(r.cadena) === normalizeChain(chainFilter));
   const period = getSelectedPeriodRange();
   if(period){
     base = base.filter(r => recordMatchesSelectedPeriod(r, period, mode));
@@ -1042,6 +1092,9 @@ function levenshtein(a, b){
    ============================================================ */
 function runDataValidations(rows, get){
   const issues = [];
+  if(get.hasColumn && !get.hasColumn('Cadena')){
+    issues.push({fila:'Archivo', tipo:'CADENA_DEFAULT', detalle:'El archivo no incluye la columna Cadena; se asignó SORIANA por default a todas las filas procesadas.', campana:'', cliente:'SORIANA'});
+  }
   const cidMap = new Map(); // Creatividad Id -> {cliente,campana,articulo}
   const knownArts = [...ECO_ARTS];
 
@@ -1052,6 +1105,7 @@ function runDataValidations(rows, get){
     const isEco = ECO_ARTS.has(art);
 
     if(isEco){
+      const cadena = normalizeChain(get(row,'Cadena'));
       const cliente = String(get(row,'Cliente')||'').trim();
       const anunciante = String(get(row,'Anunciante')||'').trim();
       const campana = String(get(row,'Campaña')||'').trim();
@@ -1062,6 +1116,8 @@ function runDataValidations(rows, get){
       const fij = toDate(fijRaw), ret = toDate(retRaw);
 
       const faltantes = [];
+      if(!cadena) faltantes.push('Cadena');
+      if(get.hasColumn && get.hasColumn('Cadena') && !CHAIN_CONFIG[cadena]) issues.push({fila, tipo:'CADENA_NO_RECONOCIDA', detalle:`Cadena "${get(row,'Cadena')}" no está configurada; se conservará como cadena separada. Valores esperados: SORIANA / LA COMER.`, campana, cliente});
       if(!cliente) faltantes.push('Cliente');
       if(!anunciante) faltantes.push('Anunciante');
       if(!campana) faltantes.push('Campaña');
@@ -1092,17 +1148,19 @@ function runDataValidations(rows, get){
 
   window.comflowDataIssues = issues;
   if(issues.length){
-    console.groupCollapsed(`%cCom Flow · ${issues.length} posible(s) inconsistencia(s) en el archivo (ver comflowDataIssues)`, 'color:#C7960B;font-weight:bold');
+    console.groupCollapsed(`%ceComFlow · ${issues.length} posible(s) inconsistencia(s) en el archivo (ver comflowDataIssues)`, 'color:#C7960B;font-weight:bold');
     console.table(issues);
     console.groupEnd();
   } else {
-    console.log('%cCom Flow · validación de archivo sin inconsistencias detectadas.', 'color:#3C8A3C');
+    console.log('%ceComFlow · validación de archivo sin inconsistencias detectadas.', 'color:#3C8A3C');
   }
   renderDataIssuesBadge(issues);
 }
 
 const ISSUE_LABELS = {
   CAMPO_VACÍO: 'Campo vacío',
+  CADENA_DEFAULT: 'Cadena default',
+  CADENA_NO_RECONOCIDA: 'Cadena no reconocida',
   FECHAS_INVERTIDAS: 'Fechas invertidas',
   PERIODO_NO_RECONOCIDO: 'Periodo no reconocido',
   CREATIVIDAD_ID_DUPLICADO: 'Creatividad ID duplicada',
@@ -1170,6 +1228,7 @@ function processFile(file) {
       const k = colMap[name];
       return k !== undefined ? row[k] : '';
     };
+    get.hasColumn = (name) => colMap[name] !== undefined;
 
     rawEcoCount = 0;
     const seenWeekly = new Set();
@@ -1184,10 +1243,12 @@ function processFile(file) {
       const periodo = parsePeriodo(get(row,'Periodo')) || {code:'SIN PERIODO',label:'Sin periodo',start:toDate(get(row,'Fecha Fijación')),end:toDate(get(row,'Fecha Retirada')),key:'SIN_PERIODO'};
       if(!periodsMap.has(periodo.key)) periodsMap.set(periodo.key, periodo);
 
-      const m = MEDIDAS[art] || {D:'',M:'',A1:'',A2:''};
+      const cadena = normalizeChain(get(row,'Cadena'));
+      const m = getMedidas(cadena, art);
       const fij = toDate(get(row,'Fecha Fijación')) || periodo.start;
       const ret = toDate(get(row,'Fecha Retirada')) || periodo.end;
       const rec = {
+        cadena,
         cliente:   String(get(row,'Cliente')||'').trim(),
         anunciante:String(get(row,'Anunciante')||'').trim(),
         campana:   String(get(row,'Campaña')||'').trim(),
@@ -1280,6 +1341,8 @@ function sortRecords(a,b){
   const pa = (a.periods && a.periods[0]?.start) || a.start || a.fij || new Date(9999,0,1);
   const pb = (b.periods && b.periods[0]?.start) || b.start || b.fij || new Date(9999,0,1);
   if(pa - pb) return pa - pb;
+  if ((a.cadena||'') < (b.cadena||'')) return -1;
+  if ((a.cadena||'') > (b.cadena||'')) return 1;
   if (a.anunciante < b.anunciante) return -1;
   if (a.anunciante > b.anunciante) return 1;
   return String(a.campana).localeCompare(String(b.campana), 'es', {numeric:true});
@@ -1299,6 +1362,7 @@ function buildPeriodSelect(){
   let defaultAction = 'all';
   if(prefs){
     if(prefs.actionFilter) defaultAction = prefs.actionFilter;
+    if(prefs.chainFilter) chainFilter = prefs.chainFilter;
     if(prefs.periodKey){
       const stillValid = prefs.periodKey === 'all' || prefs.periodKey === NEXT_FRIDAY_KEY || periodCatalog.some(p => p.key === prefs.periodKey);
       if(stillValid) defaultPeriod = prefs.periodKey;
@@ -1308,43 +1372,101 @@ function buildPeriodSelect(){
   actionFilter = defaultAction;
   sel.value = selectedPeriod;
   document.getElementById('actionFilter').value = actionFilter;
+  const chainSel = document.getElementById('chainFilterSelect');
+  if(chainSel) chainSel.value = chainFilter || 'all';
 }
 
 function checklistGroupKeyFromConsolidated(r){
-  // Mismo criterio de agrupación que usa Control Operativo: Cliente + Marca + Campaña + Artículo + Espacio + Creatividad ID.
-  // La Creatividad ID separa líneas: si cambia el ID, cambia el arte y se gestiona aparte.
-  return [r.cliente, r.anunciante, r.campana, r.articulo, r.nivel, r.cid || 'SIN_CREATIVIDAD_ID'].map(v => String(v||'').trim().toUpperCase()).join('|||');
+  // Mismo criterio de agrupación que usa Control Operativo: Cadena + Cliente + Marca + Campaña + Artículo + Espacio + Creatividad ID.
+  // La Creatividad ID separa líneas; Cadena evita mezclar Soriana y La Comer.
+  return [normalizeChain(r.cadena), r.cliente, r.anunciante, r.campana, r.articulo, r.nivel, r.cid || 'SIN_CREATIVIDAD_ID'].map(v => String(v||'').trim().toUpperCase()).join('|||');
 }
 
-function countEspaciosEnPeriodo(periodKey){
-  if(!periodKey) return {total:0, nuevos:0, listas:0, testigos:0, completas:0, enSeguimiento:0};
-  const seen = new Set();
-  const seenNuevos = new Set();
-  consolidatedRecords.forEach(r => {
-    const periods = r.periods && r.periods.length ? r.periods : (r.periodKey ? [{key:r.periodKey}] : []);
-    if(!periods.some(p => p.key === periodKey)) return;
-    const gk = checklistGroupKeyFromConsolidated(r);
-    seen.add(gk);
-    if(periods[0] && periods[0].key === periodKey) seenNuevos.add(gk);
+function shiftDateByDays(d, days){
+  d = toDate(d);
+  if(!d) return null;
+  const x = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  x.setDate(x.getDate() + days);
+  return normDate(x);
+}
+function offsetPeriodCode(code, offset){
+  const m = String(code || '').trim().match(/^([A-Za-z]+)(\d+)$/);
+  if(!m) return offset < 0 ? 'ANTERIOR' : 'SIGUIENTE';
+  const n = Number(m[2]) + offset;
+  return `${m[1].toUpperCase()}${n}`;
+}
+function adjacentPeriod(period, offset){
+  if(!period || !period.start || !period.end) return null;
+  const start = shiftDateByDays(period.start, offset * 7);
+  const end = shiftDateByDays(period.end, offset * 7);
+  const code = offsetPeriodCode(period.code, offset);
+  return {
+    key:`__AUTO_${offset}_${fmtDate(start)}_${fmtDate(end)}`,
+    code,
+    label:`${code} - ${fmtDate(start)} a ${fmtDate(end)}`,
+    start,
+    end,
+    synthetic:true
+  };
+}
+function periodMatchesRecord(r, period){
+  if(!period) return false;
+  const periods = r.periods && r.periods.length ? r.periods : (r.periodKey ? [{key:r.periodKey, code:r.periodCode, start:r.start, end:r.end}] : []);
+  if(period.key && periods.some(p => p.key === period.key)) return true;
+  if(period.code && periods.some(p => String(p.code||'').toUpperCase() === String(period.code||'').toUpperCase())) return true;
+  return overlaps(r.start, r.end, period.start, period.end);
+}
+function periodMatchesDoc(g, period){
+  if(!period) return false;
+  const ptxt = String(g.periodText || '').toUpperCase();
+  if(period.code && ptxt && ptxt.split(/[,;\s]+/).includes(String(period.code).toUpperCase())) return true;
+  return overlaps(g.start, g.end, period.start, period.end);
+}
+function countEspaciosEnPeriodo(periodOrKey){
+  let period = typeof periodOrKey === 'string' ? getPeriodoByKey(periodOrKey) : periodOrKey;
+  if(!period || !period.start || !period.end) return {total:0, nuevos:0, listas:0, testigos:0, completas:0, enSeguimiento:0, desdeMemoria:0};
+
+  const entries = new Map();
+  const addEntry = (key, item, source) => {
+    if(!key) return;
+    const current = entries.get(key) || {checks:{}, start:null, end:null, source:''};
+    const checks = item.checks || current.checks || {};
+    const start = toDate(item.start) || current.start;
+    const end = toDate(item.end) || current.end;
+    entries.set(key, {checks, start, end, source: current.source || source});
+  };
+
+  // Fuente 1: archivo cargado actual. Útil para periodos que sí vienen en el Excel parcial.
+  consolidatedRecords.filter(r => !chainFilter || chainFilter === 'all' || normalizeChain(r.cadena) === normalizeChain(chainFilter)).forEach(r => {
+    if(!periodMatchesRecord(r, period)) return;
+    const opKey = checklistOperationalKey(r);
+    const id = sanitizeId(opKey);
+    const legacyId = sanitizeId(legacyChecklistOperationalKey(r));
+    const doc = checklistState.get(id) || checklistState.get(legacyId) || null;
+    addEntry(opKey, {checks:(doc && doc.checks) || {}, start:r.start, end:r.end}, 'archivo');
   });
 
-  let listas = 0, testigos = 0, completas = 0, enSeguimiento = 0;
-  seen.forEach(gk => {
-    const id = typeof sanitizeId === 'function' ? sanitizeId(gk) : gk;
-    const doc = (typeof checklistState !== 'undefined' && checklistState.get(id)) || null;
-    const checks = (doc && doc.checks) || {};
-    const fields = (typeof CHECK_FIELDS !== 'undefined' && CHECK_FIELDS.length) ? CHECK_FIELDS : [
-      {key:'correoMarca'},{key:'artes'},{key:'validacion'},{key:'link'},{key:'kevel'},{key:'testigosApp'},{key:'testigosWeb'}
-    ];
-    const done = fields.filter(f => checks[f.key]).length;
+  // Fuente 2: memoria operativa en Firebase. Corrige semanas anteriores o líneas no incluidas en el Excel parcial.
+  mapChecklistDocs().filter(matchesSelectedChainDoc).forEach(g => {
+    if(!periodMatchesDoc(g, period)) return;
+    const key = g.operationalKey || g.id;
+    addEntry(key, g, 'memoria');
+  });
+
+  let nuevos = 0, listas = 0, testigos = 0, completas = 0, enSeguimiento = 0, desdeMemoria = 0;
+  entries.forEach(item => {
+    const checks = item.checks || {};
+    const {done,total} = checksProgress(checks);
     const preLaunchDone = checks.correoMarca && checks.artes && checks.validacion && checks.link && checks.kevel;
     const testigosDone = checks.testigosApp && checks.testigosWeb;
+    if(dateInRange(item.start, period.start, period.end)) nuevos++;
     if(preLaunchDone) listas++;
     if(testigosDone) testigos++;
-    if(done >= fields.length) completas++; else enSeguimiento++;
+    if(done >= total) completas++; else enSeguimiento++;
+    if(item.source === 'memoria') desdeMemoria++;
   });
 
-  return {total:seen.size, nuevos:seenNuevos.size, listas, testigos, completas, enSeguimiento};
+  return {total:entries.size, nuevos, listas, testigos, completas, enSeguimiento, desdeMemoria};
 }
 
 function findCurrentPeriodIndex(){
@@ -1372,17 +1494,18 @@ function renderWeekSummary(){
   const idx = findCurrentPeriodIndex();
   if(idx === -1){ wrap.innerHTML = ''; return; }
 
-  const anterior = idx > 0 ? periodCatalog[idx-1] : null;
   const actual = periodCatalog[idx];
-  const siguiente = idx < periodCatalog.length-1 ? periodCatalog[idx+1] : null;
+  const anterior = idx > 0 ? periodCatalog[idx-1] : adjacentPeriod(actual, -1);
+  const siguiente = idx < periodCatalog.length-1 ? periodCatalog[idx+1] : adjacentPeriod(actual, 1);
 
-  const dAnt = anterior ? countEspaciosEnPeriodo(anterior.key) : null;
-  const dAct = countEspaciosEnPeriodo(actual.key);
-  const dSig = siguiente ? countEspaciosEnPeriodo(siguiente.key) : null;
+  const dAnt = anterior ? countEspaciosEnPeriodo(anterior) : null;
+  const dAct = countEspaciosEnPeriodo(actual);
+  const dSig = siguiente ? countEspaciosEnPeriodo(siguiente) : null;
 
   const card = (period, data, opts={}) => {
     if(!period) return `<div class="week-card"><div class="week-card-label">${esc(opts.label||'')}</div><div class="week-card-range">Sin datos en el archivo</div></div>`;
     const rango = (period.start && period.end) ? `${fmtDate(period.start)} a ${fmtDate(period.end)}` : '';
+    const sourceNote = (period.synthetic || (data && data.desdeMemoria && data.desdeMemoria === data.total)) ? '<span class="week-new-badge no-new">Memoria operativa</span>' : '';
     let extra = '';
     if(opts.showDelta) extra = weekDeltaHtml(data.total, opts.prevTotal);
     if(opts.showNew){
@@ -1392,7 +1515,7 @@ function renderWeekSummary(){
     const pct = data.total ? Math.round((data.completas / data.total) * 100) : 0;
     return `<div class="week-card${opts.current?' is-current':''}">
       <div class="week-card-label">${esc(opts.label)} · ${esc(period.code)}</div>
-      <div class="week-card-range">${esc(rango)}</div>
+      <div class="week-card-range">${esc(rango)} ${sourceNote}</div>
       <div class="week-card-num">${data.total}</div>
       <div class="week-card-sub">espacios pautando</div>
       ${extra}
@@ -1424,9 +1547,10 @@ function refreshAll(){
 }
 
 function renderStatsAndDashboard(data){
-  const clientes = new Set(data.map(r=>r.cliente));
+  const cadenas = new Set(data.map(r=>normalizeChain(r.cadena)));
+  const clientes = new Set(data.map(r=>normalizeChain(r.cadena)+'|'+r.cliente));
   const anus = new Set(data.map(r=>r.anunciante));
-  const camps = new Set(data.map(r=>r.cliente+'|'+r.anunciante+'|'+r.campana));
+  const camps = new Set(data.map(r=>normalizeChain(r.cadena)+'|'+r.cliente+'|'+r.anunciante+'|'+r.campana));
   document.getElementById('s-cli').textContent = clientes.size;
   document.getElementById('s-anu').textContent = anus.size;
   document.getElementById('s-camp').textContent = camps.size;
@@ -1441,8 +1565,8 @@ function renderStatsAndDashboard(data){
 
   const grupos = new Map();
   data.forEach(r => {
-    const k = (currentMode==='weekly' ? r.periodKey+'|' : '') + r.cliente+'|'+r.anunciante+'|'+r.campana;
-    if (!grupos.has(k)) grupos.set(k, {periods:new Map(), anunciante:r.anunciante, campana:r.campana, cliente:r.cliente, count:0, start:null, end:null, deadline:null});
+    const k = (currentMode==='weekly' ? r.periodKey+'|' : '') + normalizeChain(r.cadena)+'|'+r.cliente+'|'+r.anunciante+'|'+r.campana;
+    if (!grupos.has(k)) grupos.set(k, {periods:new Map(), cadena:normalizeChain(r.cadena), anunciante:r.anunciante, campana:r.campana, cliente:r.cliente, count:0, start:null, end:null, deadline:null});
     const g = grupos.get(k);
     g.count++;
     (r.periods || [{key:r.periodKey, code:r.periodCode, label:r.periodLabel, start:r.start, end:r.end}]).forEach(p => { if(p.key && !g.periods.has(p.key)) g.periods.set(p.key,p); });
@@ -1457,14 +1581,14 @@ function renderStatsAndDashboard(data){
     const periods = [...g.periods.values()].sort((a,b)=>(a.start||0)-(b.start||0)).map(p=>p.code).join(', ') || '—';
     const sem = semaforo(g.deadline, g.end);
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td><span class="period-chip">${esc(periods)}</span></td><td>${esc(g.cliente)}</td><td>${esc(g.anunciante)}</td><td>#${esc(g.campana)}</td><td>${g.count}</td><td>${fmtDate(g.start)}</td><td>${fmtDate(g.end)}</td><td><span style="background:var(--warn);color:var(--warn-text);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:600">${fmtDeadline(g.deadline)}</span></td><td><span class="sem ${sem.cls}">${sem.txt}</span></td>`;
+    tr.innerHTML = `<td><span class="period-chip">${esc(periods)}</span></td><td><span class="period-chip">${esc(chainLabel(g.cadena))}</span></td><td>${esc(g.cliente)}</td><td>${esc(g.anunciante)}</td><td>#${esc(g.campana)}</td><td>${g.count}</td><td>${fmtDate(g.start)}</td><td>${fmtDate(g.end)}</td><td><span style="background:var(--warn);color:var(--warn-text);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:600">${fmtDeadline(g.deadline)}</span></td><td><span class="sem ${sem.cls}">${sem.txt}</span></td>`;
     dashTbody.appendChild(tr);
   });
 }
 
 let lastEcoData = [];
 let ecoSort = {key:null, dir:1};
-const ECO_SORTABLE_KEYS = ['cliente','anunciante','campana','articulo','nivel','cid','start','end','deadline'];
+const ECO_SORTABLE_KEYS = ['cadena','cliente','anunciante','campana','articulo','nivel','cid','start','end','deadline'];
 
 function sortByKey(data, key, dir){
   const sorted = [...data];
@@ -1514,9 +1638,9 @@ function renderEcoTable(data) {
   if(ecoSort.key) data = sortByKey(data, ecoSort.key, ecoSort.dir);
   updateSortArrows('eco', ECO_SORTABLE_KEYS, ecoSort);
   const tbody = document.getElementById('ecoTable');
-  if(!data.length){ tbody.innerHTML = '<tr><td colspan="15" style="text-align:center;color:var(--muted);padding:28px">No hay registros con el filtro seleccionado.</td></tr>'; return; }
+  if(!data.length){ tbody.innerHTML = '<tr><td colspan="16" style="text-align:center;color:var(--muted);padding:28px">No hay registros con el filtro seleccionado.</td></tr>'; return; }
   tbody.innerHTML = data.map(r => `<tr>
-    <td>${periodChipHtml(r)}</td><td>${esc(r.cliente)}</td><td>${esc(r.anunciante)}</td><td>#${esc(r.campana)}</td><td>${esc(r.articulo)}</td><td>${esc(r.nivel)}</td><td>${esc(r.cid||'—')}</td>
+    <td>${periodChipHtml(r)}</td><td><span class="period-chip">${esc(chainLabel(r.cadena))}</span></td><td>${esc(r.cliente)}</td><td>${esc(r.anunciante)}</td><td>#${esc(r.campana)}</td><td>${esc(r.articulo)}</td><td>${esc(r.nivel)}</td><td>${esc(r.cid||'—')}</td>
     <td>${fmtDate(r.start || r.fij)}</td><td>${fmtDate(r.end || r.ret)}</td><td>${fmtDeadline(r.deadline)}</td><td>${semaforoHtml(r)}</td>
     <td>${esc(r.desktop)}</td><td>${esc(r.mobile)}</td><td>${esc(r.app1)}</td><td>${esc(r.app2||'—')}</td>
   </tr>`).join('');
@@ -1526,6 +1650,8 @@ function filterEco(q) {
   const f = q.toLowerCase();
   const base = getFilteredRecords(currentMode);
   const filtered = f ? base.filter(r =>
+    String(r.cadena).toLowerCase().includes(f) ||
+    String(chainLabel(r.cadena)).toLowerCase().includes(f) ||
     String(r.cliente).toLowerCase().includes(f) ||
     r.anunciante.toLowerCase().includes(f) ||
     String(r.campana).toLowerCase().includes(f) ||
@@ -1540,10 +1666,10 @@ function populateCampaignSelects(){
   const rows = getFilteredConsolidatedRecords();
   const grupos = new Map();
   rows.forEach(r => {
-    const k = r.cliente+'|||'+r.anunciante+'|||'+r.campana;
-    if(!grupos.has(k)) grupos.set(k, {cliente:r.cliente, anunciante:r.anunciante,campana:r.campana,start:r.start});
+    const k = normalizeChain(r.cadena)+'|||'+r.cliente+'|||'+r.anunciante+'|||'+r.campana;
+    if(!grupos.has(k)) grupos.set(k, {cadena:normalizeChain(r.cadena), cliente:r.cliente, anunciante:r.anunciante,campana:r.campana,start:r.start});
   });
-  const opts = [...grupos.values()].sort((a,b)=>(a.start||0)-(b.start||0)).map(g => `<option value="${esc(g.cliente)}|||${esc(g.anunciante)}|||${esc(g.campana)}">${esc(g.cliente)} | ${esc(g.anunciante)} | #${esc(g.campana)}</option>`).join('');
+  const opts = [...grupos.values()].sort((a,b)=>(a.start||0)-(b.start||0)).map(g => `<option value="${esc(g.cadena)}|||${esc(g.cliente)}|||${esc(g.anunciante)}|||${esc(g.campana)}">${esc(chainLabel(g.cadena))} | ${esc(g.cliente)} | ${esc(g.anunciante)} | #${esc(g.campana)}</option>`).join('');
   const specsEl = document.getElementById('specsSelect');
   const specsCurr = specsEl.value;
   specsEl.innerHTML = '<option value="">Vista general: todas las campañas filtradas</option>' + opts;
@@ -1569,15 +1695,15 @@ function renderSpecs() {
   let selected = false;
 
   if (val) {
-    const [cli, anu, camp] = val.split('|||');
-    rows = baseRows.filter(r => r.cliente === cli && r.anunciante === anu && r.campana === camp);
-    title = `Specs — ${cli} | ${anu} | #${camp}`;
+    const [cad, cli, anu, camp] = val.split('|||');
+    rows = baseRows.filter(r => normalizeChain(r.cadena) === normalizeChain(cad) && r.cliente === cli && r.anunciante === anu && r.campana === camp);
+    title = `Specs — ${chainLabel(cad)} | ${cli} | ${anu} | #${camp}`;
     selected = true;
-    summary = `Mostrando specs para ${cli} | ${anu} | #${camp}.`;
+    summary = `Mostrando specs para ${chainLabel(cad)} | ${cli} | ${anu} | #${camp}.`;
   } else {
     const clients = new Set(rows.map(r => r.cliente)).size;
     const brands = new Set(rows.map(r => r.anunciante)).size;
-    const campaigns = new Set(rows.map(r => r.cliente+'|'+r.anunciante+'|'+r.campana)).size;
+    const campaigns = new Set(rows.map(r => normalizeChain(r.cadena)+'|'+r.cliente+'|'+r.anunciante+'|'+r.campana)).size;
     summary = `Vista general: ${clients} cliente(s), ${brands} anunciante(s) / marca(s), ${campaigns} campaña(s) y ${rows.length} creatividad(es), de acuerdo con los filtros globales activos.`;
   }
 
@@ -1586,7 +1712,7 @@ function renderSpecs() {
 
   const tbody = document.getElementById('specsTable');
   if (!rows.length) {
-    tbody.innerHTML = '<tr><td colspan="14" style="text-align:center;color:var(--muted);padding:28px">No hay specs que coincidan con los filtros seleccionados.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="15" style="text-align:center;color:var(--muted);padding:28px">No hay specs que coincidan con los filtros seleccionados.</td></tr>';
     return;
   }
 
@@ -1594,6 +1720,7 @@ function renderSpecs() {
     const flStr = fmtDeadline(r.deadline || calcDeadline(r.start));
     const deadlineHtml = selected && i > 0 ? '' : `FECHA LÍMITE<br>${esc(flStr)}`;
     return `<tr>
+      <td><span class="period-chip">${esc(chainLabel(r.cadena))}</span></td>
       <td>${esc(r.cliente)}</td>
       <td>${esc(r.anunciante)}</td>
       <td>#${esc(r.campana)}</td>
@@ -1621,6 +1748,7 @@ function getMeses(rows) {
 function buildSpecsTable(rows) {
   return `<table class="specs-table" style="font-size:11px;width:100%;margin:8px 0 16px;text-align:center">
     <thead><tr>
+      <th class="h-dark">Cadena</th>
       <th class="h-dark">Cliente</th>
       <th class="h-dark">Anunciante / Marca</th>
       <th class="h-dark">Periodo(s)</th>
@@ -1635,7 +1763,7 @@ function buildSpecsTable(rows) {
     </tr></thead>
     <tbody>
       ${rows.map(r=>`<tr>
-        <td style="text-align:center">${esc(r.cliente)}</td><td style="text-align:center">${esc(r.anunciante)}</td><td style="text-align:center">${periodChipHtml(r)}</td><td style="text-align:center">${esc(r.articulo)}</td><td style="text-align:center">${esc(r.nivel)}</td>
+        <td style="text-align:center">${esc(chainLabel(r.cadena))}</td><td style="text-align:center">${esc(r.cliente)}</td><td style="text-align:center">${esc(r.anunciante)}</td><td style="text-align:center">${periodChipHtml(r)}</td><td style="text-align:center">${esc(r.articulo)}</td><td style="text-align:center">${esc(r.nivel)}</td>
         <td style="text-align:center">${fmtDate(r.start)}</td><td style="text-align:center">${fmtDate(r.end)}</td>
         <td style="text-align:center">${esc(r.desktop)}</td><td style="text-align:center">${esc(r.mobile)}</td><td style="text-align:center">${esc(r.app1)}</td><td style="text-align:center">${esc(r.app2||'—')}</td>
       </tr>`).join('')}
@@ -1650,8 +1778,8 @@ function renderBorrador() {
     contentEl.innerHTML = '<div class="placeholder-msg">Selecciona cliente, anunciante o marca y campaña para generar el borrador</div>';
     return;
   }
-  const [cli, anu, camp] = val.split('|||');
-  const rows = getFilteredConsolidatedRecords().filter(r => r.cliente === cli && r.anunciante === anu && r.campana === camp);
+  const [cad, cli, anu, camp] = val.split('|||');
+  const rows = getFilteredConsolidatedRecords().filter(r => normalizeChain(r.cadena) === normalizeChain(cad) && r.cliente === cli && r.anunciante === anu && r.campana === camp);
   if (!rows.length) return;
 
   const start = rows.reduce((m,r) => r.start && (!m||r.start<m)?r.start:m, null);
@@ -1659,14 +1787,16 @@ function renderBorrador() {
   const fl = calcDeadline(start);
   const flStr = fmtDeadline(fl);
   const meses = getMeses(rows);
+  const cadena = normalizeChain(rows[0].cadena);
+  const cadenaCfg = chainConfig(cadena);
   const cliente = rows[0].cliente;
   const periodos = [...new Set(rows.flatMap(r => (r.periods || []).map(p=>p.code)))].join(', ');
 
-  const asunto = `${camp} | ${cliente} | ${RETAILER_CONFIG.etiquetaCampanias} | ${meses}`;
+  const asunto = `${camp} | ${cliente} | ${cadenaCfg.etiquetaCampanias} | ${meses}`;
   const specsHtml = buildSpecsTable(rows);
   const sem = semaforo(fl, end);
 
-  const cuerpoIntro = `Hola [nombre],\n\nEspero se encuentren muy bien. Les compartimos las especificaciones técnicas de la campaña #${camp} para ${RETAILER_CONFIG.nombre}, activa del ${fmtDate(start)} al ${fmtDate(end)}, correspondiente a los periodos ${periodos}.\n\nA continuación encontrarán el detalle de las creatividades requeridas:`;
+  const cuerpoIntro = `Hola [nombre],\n\nEspero se encuentren muy bien. Les compartimos las especificaciones técnicas de la campaña #${camp} para ${cadenaCfg.nombre}, activa del ${fmtDate(start)} al ${fmtDate(end)}, correspondiente a los periodos ${periodos}.\n\nA continuación encontrarán el detalle de las creatividades requeridas:`;
   const cuerpoCierre = `📅 Fecha límite de entrega de materiales: ${flStr}\nEsta fecha es indispensable para asegurar la correcta implementación de su campaña. Materiales recibidos fuera de plazo podrán quedar sujetos a reprogramación.\n\n📎 Adjunto encontrarán nuestra Guía de Buenas Prácticas con los requisitos técnicos que deben cumplir todos los materiales antes del envío.\n\nAnte cualquier duda, con gusto les orientamos.\n\nSaludos,`;
 
   contentEl.innerHTML = `
@@ -1674,6 +1804,8 @@ function renderBorrador() {
       <div class="dl-label">FECHA LÍMITE DE ENTREGA · <span class="sem ${sem.cls}" style="margin-left:6px">${sem.txt}</span></div>
       <div class="dl-date">${esc(flStr)}</div>
     </div>
+    <div class="field-label">CADENA</div>
+    <div class="field-val" style="margin-bottom:12px">${esc(chainLabel(cadena))}</div>
     <div class="field-label">CLIENTE</div>
     <div class="field-val" style="margin-bottom:12px">${esc(cliente)}</div>
     <div class="field-label">ANUNCIANTE / MARCA</div>
@@ -1686,7 +1818,7 @@ function renderBorrador() {
       ${specsHtml}
       <div style="white-space:pre-wrap;font-size:12px;line-height:1.7;color:#1a1a2e">${esc(cuerpoCierre)}</div>
     </div>
-    <button class="btn-copy" id="btnCopyBorrador" onclick="copyBorradorCompleto('${cliente.replace(/'/g,"\\'")}','${anu.replace(/'/g,"\\'")}','${camp.replace(/'/g,"\\'")}')">
+    <button class="btn-copy" id="btnCopyBorrador" onclick="copyBorradorCompleto('${cadena.replace(/'/g,"\\'")}','${cliente.replace(/'/g,"\\'")}','${anu.replace(/'/g,"\\'")}','${camp.replace(/'/g,"\\'")}')">
       <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
       Copiar borrador para Outlook
     </button>`;
@@ -1699,14 +1831,14 @@ function emailTableHtml(rows) {
   const thBase = 'border:1px solid #FFFFFF;padding:7px 8px;text-align:center;font-weight:bold;color:#FFFFFF;white-space:nowrap;vertical-align:middle;font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:14px;';
   const tdBase = 'border:1px solid #D9E2EF;padding:7px 8px;text-align:center;vertical-align:middle;color:#1a1a1a;font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:14px;';
   const headers = [
-    ['Cliente','#1F3864'],['Anunciante / Marca','#1F3864'],['Periodo(s)','#1F3864'],['Artículo','#1F3864'],['Nivel','#1F3864'],
+    ['Cadena','#1F3864'],['Cliente','#1F3864'],['Anunciante / Marca','#1F3864'],['Periodo(s)','#1F3864'],['Artículo','#1F3864'],['Nivel','#1F3864'],
     ['Fijación','#2E75B6'],['Retirada','#2E75B6'],['Desktop','#375623'],['Mobile','#375623'],['App 1','#375623'],['App 2','#375623']
   ];
   const head = headers.map(h => `<th bgcolor="${h[1]}" align="center" valign="middle" style="${thBase}background-color:${h[1]};color:#FFFFFF;"><font color="#FFFFFF"><b>${esc(h[0])}</b></font></th>`).join('');
   const body = rows.map((r,idx) => {
     const bg = idx % 2 ? '#F8FAFC' : '#FFFFFF';
     const cells = [
-      r.cliente, r.anunciante, periodText(r), r.articulo, r.nivel,
+      chainLabel(r.cadena), r.cliente, r.anunciante, periodText(r), r.articulo, r.nivel,
       fmtDate(r.start), fmtDate(r.end), r.desktop, r.mobile, r.app1, r.app2 || '—'
     ];
     return `<tr bgcolor="${bg}" style="background-color:${bg};">${cells.map(c => `<td bgcolor="${bg}" align="center" valign="middle" style="${tdBase}background-color:${bg};">${esc(c)}</td>`).join('')}</tr>`;
@@ -1715,27 +1847,29 @@ function emailTableHtml(rows) {
 }
 
 function emailTablePlain(rows) {
-  const header = ['Cliente','Anunciante / Marca','Periodos','Artículo','Nivel','Fijación','Retirada','Desktop','Mobile','App 1','App 2'].join('\t');
-  const filas = rows.map(r => [r.cliente,r.anunciante,periodText(r),r.articulo,r.nivel,fmtDate(r.start),fmtDate(r.end),r.desktop,r.mobile,r.app1,r.app2||'—'].join('\t')).join('\n');
+  const header = ['Cadena','Cliente','Anunciante / Marca','Periodos','Artículo','Nivel','Fijación','Retirada','Desktop','Mobile','App 1','App 2'].join('\t');
+  const filas = rows.map(r => [chainLabel(r.cadena),r.cliente,r.anunciante,periodText(r),r.articulo,r.nivel,fmtDate(r.start),fmtDate(r.end),r.desktop,r.mobile,r.app1,r.app2||'—'].join('\t')).join('\n');
   return `${header}\n${filas}`;
 }
 
-function buildEmailPayload(cli, anu, camp) {
-  const rows = getFilteredConsolidatedRecords().filter(r => r.cliente === cli && r.anunciante === anu && r.campana === camp);
+function buildEmailPayload(cad, cli, anu, camp) {
+  const rows = getFilteredConsolidatedRecords().filter(r => normalizeChain(r.cadena) === normalizeChain(cad) && r.cliente === cli && r.anunciante === anu && r.campana === camp);
   if(!rows.length) return null;
   const start = rows.reduce((m,r) => r.start && (!m||r.start<m)?r.start:m, null);
   const end = rows.reduce((m,r) => r.end && (!m||r.end>m)?r.end:m, null);
   const flStr = fmtDeadline(calcDeadline(start));
   const meses = getMeses(rows);
+  const cadena = normalizeChain(rows[0].cadena);
+  const cadenaCfg = chainConfig(cadena);
   const cliente = rows[0].cliente;
   const periodos = [...new Set(rows.flatMap(r => (r.periods || []).map(p=>p.code)))].join(', ');
-  const asunto = `${camp} | ${cliente} | ${RETAILER_CONFIG.etiquetaCampanias} | ${meses}`;
+  const asunto = `${camp} | ${cliente} | ${cadenaCfg.etiquetaCampanias} | ${meses}`;
 
   const html = `
   <div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.45;color:#1a1a1a;">
     <p style="margin:0 0 14px 0;">Hola [nombre],</p>
 
-    <p style="margin:0 0 14px 0;">Espero se encuentren muy bien. Les compartimos las especificaciones técnicas de la campaña <strong>#${esc(camp)}</strong> para <strong>${esc(RETAILER_CONFIG.nombre)}</strong>, activa del <strong>${fmtDate(start)}</strong> al <strong>${fmtDate(end)}</strong>, correspondiente a los periodos <strong>${esc(periodos)}</strong>.</p>
+    <p style="margin:0 0 14px 0;">Espero se encuentren muy bien. Les compartimos las especificaciones técnicas de la campaña <strong>#${esc(camp)}</strong> para <strong>${esc(cadenaCfg.nombre)}</strong>, activa del <strong>${fmtDate(start)}</strong> al <strong>${fmtDate(end)}</strong>, correspondiente a los periodos <strong>${esc(periodos)}</strong>.</p>
 
     <p style="margin:0 0 8px 0;">A continuación encontrarán el detalle de las creatividades requeridas:</p>
 
@@ -1751,7 +1885,7 @@ function buildEmailPayload(cli, anu, camp) {
     <p style="margin:0;">Saludos,</p>
   </div>`;
 
-  const plain = `Cliente: ${cliente}\nAnunciante / Marca: ${anu}\nAsunto: ${asunto}\n\nHola [nombre],\n\nEspero se encuentren muy bien. Les compartimos las especificaciones técnicas de la campaña #${camp} para ${RETAILER_CONFIG.nombre}, activa del ${fmtDate(start)} al ${fmtDate(end)}, correspondiente a los periodos ${periodos}.\n\nA continuación encontrarán el detalle de las creatividades requeridas:\n\n${emailTablePlain(rows)}\n\n📅 Fecha límite de entrega de materiales: ${flStr}\nEsta fecha es indispensable para asegurar la correcta implementación de su campaña. Materiales recibidos fuera de plazo podrán quedar sujetos a reprogramación.\n\n📎 Adjunto encontrarán nuestra Guía de Buenas Prácticas con los requisitos técnicos que deben cumplir todos los materiales antes del envío.\n\nAnte cualquier duda, con gusto les orientamos.\n\nSaludos,`;
+  const plain = `Cadena: ${chainLabel(cadena)}\nCliente: ${cliente}\nAnunciante / Marca: ${anu}\nAsunto: ${asunto}\n\nHola [nombre],\n\nEspero se encuentren muy bien. Les compartimos las especificaciones técnicas de la campaña #${camp} para ${cadenaCfg.nombre}, activa del ${fmtDate(start)} al ${fmtDate(end)}, correspondiente a los periodos ${periodos}.\n\nA continuación encontrarán el detalle de las creatividades requeridas:\n\n${emailTablePlain(rows)}\n\n📅 Fecha límite de entrega de materiales: ${flStr}\nEsta fecha es indispensable para asegurar la correcta implementación de su campaña. Materiales recibidos fuera de plazo podrán quedar sujetos a reprogramación.\n\n📎 Adjunto encontrarán nuestra Guía de Buenas Prácticas con los requisitos técnicos que deben cumplir todos los materiales antes del envío.\n\nAnte cualquier duda, con gusto les orientamos.\n\nSaludos,`;
 
   return {html, plain, asunto, rows};
 }
@@ -1816,8 +1950,8 @@ async function copyRichToClipboard(html, plain) {
   }
 }
 
-async function copyBorradorCompleto(cli, anu, camp) {
-  const payload = buildEmailPayload(cli, anu, camp);
+async function copyBorradorCompleto(cad, cli, anu, camp) {
+  const payload = buildEmailPayload(cad, cli, anu, camp);
   if(!payload) return;
   const rich = await copyRichToClipboard(payload.html, payload.plain);
   const btn = document.getElementById('btnCopyBorrador');
@@ -1825,13 +1959,13 @@ async function copyBorradorCompleto(cli, anu, camp) {
   showToast(rich ? '✓ Borrador copiado con tabla para Outlook' : '✓ Borrador copiado como texto');
 }
 
-async function copySpecs(cli, anu, camp) {
-  const payload = buildEmailPayload(cli, anu, camp);
+async function copySpecs(cad, cli, anu, camp) {
+  const payload = buildEmailPayload(cad, cli, anu, camp);
   if(!payload) return;
   const start = payload.rows.reduce((m,r) => r.start && (!m||r.start<m)?r.start:m, null);
   const flStr = fmtDeadline(calcDeadline(start));
-  const html = `<div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#1a1a1a;"><p style="margin:0 0 8px 0;"><strong>SPECS — ${esc(cli)} | ${esc(anu)} | #${esc(camp)}</strong></p><p style="margin:0 0 12px 0;"><strong>Fecha límite:</strong> ${esc(flStr)}</p>${emailTableHtml(payload.rows)}</div>`;
-  const plain = `SPECS — ${cli} | ${anu} | #${camp}\nFecha límite: ${flStr}\n\n${emailTablePlain(payload.rows)}`;
+  const html = `<div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#1a1a1a;"><p style="margin:0 0 8px 0;"><strong>SPECS — ${esc(chainLabel(cad))} | ${esc(cli)} | ${esc(anu)} | #${esc(camp)}</strong></p><p style="margin:0 0 12px 0;"><strong>Fecha límite:</strong> ${esc(flStr)}</p>${emailTableHtml(payload.rows)}</div>`;
+  const plain = `SPECS — ${chainLabel(cad)} | ${cli} | ${anu} | #${camp}\nFecha límite: ${flStr}\n\n${emailTablePlain(payload.rows)}`;
   const rich = await copyRichToClipboard(html, plain);
   showToast(rich ? '✓ Specs copiadas con tabla para Outlook' : '✓ Specs copiadas como texto');
 }
@@ -1879,8 +2013,8 @@ const CHECK_FIELDS = [
   {key:'testigosApp', label:'Testigos App'},
   {key:'testigosWeb', label:'Testigos Web'},
 ];
-const CHECKLIST_SCHEMA_VERSION = 'v3.3-operational-memory';
-const COMPATIBLE_SCHEMA_PREFIXES = ['v3.2-cid-line','v3.3-operational-memory'];
+const CHECKLIST_SCHEMA_VERSION = 'v3.6-chain-operational-memory';
+const COMPATIBLE_SCHEMA_PREFIXES = ['v3.2-cid-line','v3.3-operational-memory','v3.6-chain-operational-memory'];
 const RESET_RULES = {
   creatividadId: ['artes','validacion','link','kevel','testigosApp','testigosWeb'],
   creatividadIds: ['artes','validacion','link','kevel','testigosApp','testigosWeb'],
@@ -1936,18 +2070,25 @@ function sanitizeId(s){
 }
 function normKeyPart(v){ return String(v||'').trim().toUpperCase(); }
 function joinKey(parts){ return parts.map(normKeyPart).join('|||'); }
-function checklistLogicalKey(rec){
-  // Misma línea de negocio sin Creatividad ID: permite detectar cambio de arte.
+function legacyChecklistLogicalKey(rec){
   return joinKey([rec.cliente, rec.anunciante, rec.campana, rec.articulo, rec.nivel]);
 }
-function checklistOperationalKey(rec){
-  // Línea operativa única por arte: evita mezclar Creatividad ID distintas.
+function legacyChecklistOperationalKey(rec){
   return joinKey([rec.cliente, rec.anunciante, rec.campana, rec.articulo, rec.nivel, rec.cid || rec.creatividadId || 'SIN_CREATIVIDAD_ID']);
+}
+function checklistLogicalKey(rec){
+  // Misma línea de negocio sin Creatividad ID: permite detectar cambio de arte, separando cadena.
+  return joinKey([normalizeChain(rec.cadena), rec.cliente, rec.anunciante, rec.campana, rec.articulo, rec.nivel]);
+}
+function checklistOperationalKey(rec){
+  // Línea operativa única por arte: evita mezclar Creatividad ID distintas y separa Soriana/La Comer.
+  return joinKey([normalizeChain(rec.cadena), rec.cliente, rec.anunciante, rec.campana, rec.articulo, rec.nivel, rec.cid || rec.creatividadId || 'SIN_CREATIVIDAD_ID']);
 }
 function checklistGroupKey(rec){ return checklistOperationalKey(rec); }
 
 function buildFingerprint(g){
   return {
+    cadena: normalizeChain(g.cadena),
     creatividadId: String(g.creatividadId || ''),
     creatividadIds: (g.creatividadIds || []).join(','),
     start: fmtDate(g.start),
@@ -1962,7 +2103,7 @@ function fingerprintString(fp){
   return Object.keys(fp).sort().map(k => `${k}:${fp[k] ?? ''}`).join('|');
 }
 function normalizeExistingFingerprint(existing){
-  if(existing && existing.reportFingerprint) return existing.reportFingerprint;
+  if(existing && existing.reportFingerprint){ const fp = {...existing.reportFingerprint}; if(!fp.cadena) fp.cadena = normalizeChain(existing.cadena || DEFAULT_CHAIN); return fp; }
   if(existing && existing.reportHash) return {legacyHash: existing.reportHash};
   return null;
 }
@@ -2009,8 +2150,12 @@ function buildChecklistGroups(records){
     if(!map.has(key)){
       map.set(key, {
         id: sanitizeId(key),
+        legacyId: sanitizeId(legacyChecklistOperationalKey(r)),
         operationalKey: key,
+        legacyOperationalKey: legacyChecklistOperationalKey(r),
         logicalKey: checklistLogicalKey(r),
+        legacyLogicalKey: legacyChecklistLogicalKey(r),
+        cadena: normalizeChain(r.cadena),
         cliente: r.cliente, anunciante: r.anunciante, campana: r.campana,
         articulo: r.articulo, espacio: r.nivel, creatividadId: r.cid || '',
         creatividadIds: new Set(),
@@ -2045,15 +2190,20 @@ function syncChecklistFromRecords(consolidated){
 }
 
 function docIsCompatible(d){
-  return !d.schemaVersion || COMPATIBLE_SCHEMA_PREFIXES.includes(d.schemaVersion) || String(d.schemaVersion).startsWith('v3.3');
+  return !d.schemaVersion || COMPATIBLE_SCHEMA_PREFIXES.includes(d.schemaVersion) || String(d.schemaVersion).startsWith('v3.3') || String(d.schemaVersion).startsWith('v3.6');
 }
 function getDocsByLogicalKey(){
   const m = new Map();
   checklistState.forEach((d,id) => {
     if(!docIsCompatible(d)) return;
-    const lk = d.logicalKey || joinKey([d.cliente,d.anunciante,d.campana,d.articulo,d.espacio]);
-    if(!m.has(lk)) m.set(lk, []);
-    m.get(lk).push({id,...d});
+    const cadena = normalizeChain(d.cadena || DEFAULT_CHAIN);
+    const normalized = joinKey([cadena,d.cliente,d.anunciante,d.campana,d.articulo,d.espacio]);
+    const legacy = d.logicalKey || joinKey([d.cliente,d.anunciante,d.campana,d.articulo,d.espacio]);
+    [normalized, legacy].forEach(lk => {
+      if(!lk) return;
+      if(!m.has(lk)) m.set(lk, []);
+      m.get(lk).push({id,...d,cadena});
+    });
   });
   return m;
 }
@@ -2071,21 +2221,24 @@ function commitBatches(ops, done){
 
 function writeChecklistGroups(groups){
   if(!fbReady()) return;
-  const incomingIds = new Set(groups.map(g => g.id));
+  const incomingIds = new Set(groups.flatMap(g => [g.id, g.legacyId].filter(Boolean)));
   const byLogical = getDocsByLogicalKey();
   const ops = [];
   const summary = {scope:loadScope, total:groups.length, newLines:0, modified:0, creativeChanges:0, unchanged:0, notIncluded:0, finishedComplete:0, finishedMissing:0};
   const loadStamp = new Date();
 
   groups.forEach(g => {
-    const existing = checklistState.get(g.id);
-    const ref = fbDb.collection('checklist').doc(g.id);
-    const logicalMatches = (byLogical.get(g.logicalKey) || []).filter(d => d.id !== g.id);
+    const docId = checklistState.has(g.id) ? g.id : (g.legacyId && checklistState.has(g.legacyId) ? g.legacyId : g.id);
+    incomingIds.add(docId);
+    const existing = checklistState.get(docId);
+    const ref = fbDb.collection('checklist').doc(docId);
+    const logicalMatches = (byLogical.get(g.logicalKey) || []).filter(d => d.id !== docId && d.operationalKey !== g.operationalKey && d.legacyOperationalKey !== g.legacyOperationalKey);
     const basePayload = {
       schemaVersion: CHECKLIST_SCHEMA_VERSION,
+      cadena:normalizeChain(g.cadena),
       cliente:g.cliente, anunciante:g.anunciante, campana:g.campana,
       articulo:g.articulo, espacio:g.espacio, creatividadId:g.creatividadId || '', creatividadIds:g.creatividadIds,
-      logicalKey:g.logicalKey, operationalKey:g.operationalKey,
+      logicalKey:g.logicalKey, operationalKey:g.operationalKey, legacyLogicalKey:g.legacyLogicalKey || '', legacyOperationalKey:g.legacyOperationalKey || '',
       cdesc:g.cdesc || '', periodText:g.periodText || '', desktop:g.desktop || '', mobile:g.mobile || '', app1:g.app1 || '', app2:g.app2 || '',
       start: g.start ? firebase.firestore.Timestamp.fromDate(g.start) : null,
       end: g.end ? firebase.firestore.Timestamp.fromDate(g.end) : null,
@@ -2123,7 +2276,7 @@ function writeChecklistGroups(groups){
     if(!diff.changed){
       summary.unchanged++;
       // No se tocan checks ni estatus; solo se confirma que volvió a verse en esta carga.
-      ops.push(batch => batch.set(ref, {schemaVersion:CHECKLIST_SCHEMA_VERSION, missingInLatestLoad:false, lastSeenAt:firebase.firestore.FieldValue.serverTimestamp(), lastSeenBy:currentUserEmail || '', lastLoadScope:loadScope}, {merge:true}));
+      ops.push(batch => batch.set(ref, {...basePayload}, {merge:true}));
       return;
     }
 
@@ -2263,6 +2416,7 @@ function operationalStatus(g){
     if(done >= total) return {key:'finished_complete', label:'Finalizada completa', cls:'st-finished-ok'};
     return {key:'finished_missing', label:'Finalizada incompleta', cls:'st-finished-missing'};
   }
+  if(done >= total) return {key:'pautado', label:'Pautado actualmente', cls:'st-pautado'};
   if(done === 0 && g.changeType === 'NEW_LINE') return {key:'new', label:'Nueva línea', cls:'st-new'};
   return {key:'active', label:'Activa', cls:'st-active'};
 }
@@ -2274,7 +2428,7 @@ function missingChecksText(checks){
 }
 function mapChecklistDocs(){
   return [...checklistState.entries()]
-    .map(([id,d]) => ({id, ...d, start: tsToDate(d.start), end: tsToDate(d.end), deadline: tsToDate(d.deadline), lastReportChangeAt: tsToDate(d.lastReportChangeAt), changeAt: tsToDate(d.changeAt), updatedAt: tsToDate(d.updatedAt), createdAt: tsToDate(d.createdAt)}))
+    .map(([id,d]) => ({id, ...d, cadena: normalizeChain(d.cadena || DEFAULT_CHAIN), start: tsToDate(d.start), end: tsToDate(d.end), deadline: tsToDate(d.deadline), lastReportChangeAt: tsToDate(d.lastReportChangeAt), changeAt: tsToDate(d.changeAt), updatedAt: tsToDate(d.updatedAt), createdAt: tsToDate(d.createdAt)}))
     .filter(g => docIsCompatible(g) && (g.start || g.end || g.campana));
 }
 function isChecklistUrgent(checks, deadline, end, g={}){
@@ -2285,11 +2439,12 @@ function isChecklistUrgent(checks, deadline, end, g={}){
   const s = semaforo(deadline, end);
   return s.cls === 'sem-red';
 }
+function matchesSelectedChainDoc(g){ return !chainFilter || chainFilter === 'all' || normalizeChain(g.cadena) === normalizeChain(chainFilter); }
 function updateUrgentBadge(){
   const badge = document.getElementById('sbUrgentBadge');
   if(!badge) return;
   let count = 0;
-  mapChecklistDocs().forEach(d => {
+  mapChecklistDocs().filter(matchesSelectedChainDoc).forEach(d => {
     const st = operationalStatus(d);
     if(st.key === 'finished_complete') return;
     if(isChecklistUrgent(d.checks || {}, d.deadline, d.end, d)) count++;
@@ -2299,7 +2454,7 @@ function updateUrgentBadge(){
 }
 function updateChangesBadge(){
   const badge = document.getElementById('sbChangesBadge'); if(!badge) return;
-  const count = mapChecklistDocs().filter(d => d.changeDetected || d.missingInLatestLoad || ['NEW_LINE','CREATIVE_CHANGE','NEW_CREATIVE_IN_GROUP'].includes(d.changeType)).length;
+  const count = mapChecklistDocs().filter(matchesSelectedChainDoc).filter(d => d.changeDetected || d.missingInLatestLoad || ['NEW_LINE','CREATIVE_CHANGE','NEW_CREATIVE_IN_GROUP'].includes(d.changeType)).length;
   if(count > 0){ badge.style.display=''; badge.textContent=count; } else badge.style.display='none';
 }
 function renderGantt(){ renderChecklist(); }
@@ -2309,18 +2464,18 @@ function renderChecklist(){
   if(!wrap) return;
   if(!fbReady()){ wrap.innerHTML = '<div class="placeholder-msg">Falta configurar Firebase para activar el control operativo.</div>'; return; }
   if(!checklistLoaded){ wrap.innerHTML = '<div class="placeholder-msg">Sincronizando control operativo…</div>'; return; }
-  const allGroups = mapChecklistDocs().sort((a,b) => (a.start||0) - (b.start||0));
-  // Control diario: oculta finalizadas completas; conserva activas, cambios y finalizadas incompletas.
-  const groups = allGroups.filter(g => operationalStatus(g).key !== 'finished_complete');
+  const allGroups = mapChecklistDocs().filter(matchesSelectedChainDoc).sort((a,b) => (a.start||0) - (b.start||0));
+  // Control diario: oculta finalizadas completas y pautadas; conserva pendientes, cambios y finalizadas incompletas.
+  const groups = allGroups.filter(g => !['finished_complete','pautado'].includes(operationalStatus(g).key));
   const searchEl = document.getElementById('controlSearch');
   const q = (searchEl ? searchEl.value : '').trim().toLowerCase();
   const filteredGroups = q ? groups.filter(g => searchableText(g).includes(q)) : groups;
-  if(!filteredGroups.length){ wrap.innerHTML = `<div class="placeholder-msg">${q ? 'Sin resultados para tu búsqueda.' : 'Sin pendientes vivos. Las finalizadas completas están en Histórico / Consultas.'}</div>`; return; }
+  if(!filteredGroups.length){ wrap.innerHTML = `<div class="placeholder-msg">${q ? 'Sin resultados para tu búsqueda.' : 'Sin pendientes vivos. Las líneas pautadas actualmente y finalizadas completas están en Histórico / Consultas.'}</div>`; return; }
   const rows = filteredGroups.map(g => renderChecklistRow(g)).join('');
   wrap.innerHTML = `
     <table class="checklist-table audit-table">
       <thead><tr>
-        <th class="row-status"></th><th>Cliente / Campaña</th><th>Estado</th><th>Espacio</th><th>Creatividad ID</th><th>Fijación</th><th>Retirada</th><th>Deadline</th><th class="chk-col">Todo</th>
+        <th class="row-status"></th><th>Cadena / Cliente / Campaña</th><th>Estado</th><th>Espacio</th><th>Creatividad ID</th><th>Fijación</th><th>Retirada</th><th>Deadline</th><th class="chk-col">Todo</th>
         ${CHECK_FIELDS.map(f => `<th class="chk-col">${esc(f.label)}</th>`).join('')}
         <th class="chk-col">Avance</th><th>Faltantes / Cambio</th><th class="chk-col">Acciones</th>
       </tr></thead><tbody>${rows}</tbody></table>`;
@@ -2329,11 +2484,11 @@ function renderChecklist(){
 function renderChecklistRow(g){
   const checks = g.checks || {}; const {done,total} = checksProgress(checks); const rowCls = checksRowClass(checks);
   const urgent = isChecklistUrgent(checks, g.deadline, g.end, g);
-  const labelForDelete = `${g.cliente} · ${g.anunciante} — #${g.campana} (${g.articulo} / ${g.espacio || 'sin espacio'})`.replace(/'/g,"\\'").replace(/"/g,'&quot;');
+  const labelForDelete = `${chainLabel(g.cadena)} · ${g.cliente} · ${g.anunciante} — #${g.campana} (${g.articulo} / ${g.espacio || 'sin espacio'})`.replace(/'/g,"\\'").replace(/"/g,'&quot;');
   const checkboxes = CHECK_FIELDS.map(f => `<td class="chk-col" title="${esc(f.label)}"><input type="checkbox" ${checks[f.key] ? 'checked' : ''} onchange="toggleChecklistField('${esc(g.id)}','${f.key}')"></td>`).join('');
   const changes = diffHtml(g);
   return `<tr class="checklist-row ${rowCls}${urgent?' row-urgent':''}"><td class="row-status"><div></div></td>
-    <td><b>${esc(g.cliente)} · ${esc(g.anunciante)}</b><span>#${esc(g.campana)} — ${esc(g.articulo)}</span>${g.updatedAt ? `<span class="checklist-updated">Actualizado: ${fmtDate(g.updatedAt)}</span>` : ''}</td>
+    <td><b>${esc(chainLabel(g.cadena))} · ${esc(g.cliente)} · ${esc(g.anunciante)}</b><span>#${esc(g.campana)} — ${esc(g.articulo)}</span>${g.updatedAt ? `<span class="checklist-updated">Actualizado: ${fmtDate(g.updatedAt)}</span>` : ''}</td>
     <td>${statusBadge(g)}</td><td>${esc(g.espacio || '—')}</td><td>${esc((g.creatividadIds||[]).join(', ') || g.creatividadId || '—')}</td><td>${fmtDate(g.start)}</td><td>${fmtDate(g.end)}</td><td>${fmtDeadline(g.deadline)}${urgent ? '<span class="urgent-badge">⚠ Urgente</span>' : ''}</td>
     <td class="chk-col" title="Marcar o desmarcar todos los checks de esta línea"><input type="checkbox" class="check-all-box" ${done === total ? 'checked' : ''} data-partial="${done > 0 && done < total ? '1' : '0'}" onchange="toggleChecklistAllFields('${esc(g.id)}')"></td>
     ${checkboxes}<td class="checklist-progress">${done}/${total}</td><td class="audit-note">${changes || `Faltantes: ${esc(missingChecksText(checks))}`}</td>
@@ -2345,53 +2500,63 @@ function diffHtml(g){
   return `<div class="diff-list"><b>${esc(changeLabel(g.changeType))}</b><br>${changes.slice(0,3).map(c => `${esc(c.field)}: ${esc(c.before||'—')} → ${esc(c.after||'—')}`).join('<br>')}${changes.length>3?'<br>…':''}</div>`;
 }
 function searchableText(g){
-  return [g.cliente,g.anunciante,g.campana,g.articulo,g.espacio,g.creatividadId,(g.creatividadIds||[]).join(' '),g.periodText,operationalStatus(g).label,missingChecksText(g.checks),g.updatedBy,g.changeBy,JSON.stringify(g.lastChanges||[])].join(' ').toLowerCase();
+  return [g.cadena,chainLabel(g.cadena),g.cliente,g.anunciante,g.campana,g.articulo,g.espacio,g.creatividadId,(g.creatividadIds||[]).join(' '),g.periodText,operationalStatus(g).label,missingChecksText(g.checks),g.updatedBy,g.changeBy,JSON.stringify(g.lastChanges||[])].join(' ').toLowerCase();
 }
 function renderChanges(){
   const wrap = document.getElementById('changesWrap'); const summaryEl = document.getElementById('changeSummary');
   if(!wrap) return;
-  const docs = mapChecklistDocs();
+  const docs = mapChecklistDocs().filter(matchesSelectedChainDoc);
   const changes = docs.filter(g => g.changeDetected || g.missingInLatestLoad || ['NEW_LINE','CREATIVE_CHANGE','NEW_CREATIVE_IN_GROUP','MODIFIED_LINE','NOT_INCLUDED'].includes(g.changeType));
   const q = (document.getElementById('changesSearch')?.value || '').trim().toLowerCase();
   const filtered = q ? changes.filter(g => searchableText(g).includes(q)) : changes;
   const counts = {total:changes.length, nuevas:changes.filter(g=>g.changeType==='NEW_LINE').length, cambios:changes.filter(g=>['MODIFIED_LINE','CREATIVE_CHANGE','NEW_CREATIVE_IN_GROUP'].includes(g.changeType)).length, ausentes:changes.filter(g=>g.changeType==='NOT_INCLUDED'||g.missingInLatestLoad).length};
   if(summaryEl) summaryEl.innerHTML = [ ['Total alertas',counts.total], ['Líneas nuevas',counts.nuevas], ['Cambios reales',counts.cambios], ['No incluidas',counts.ausentes] ].map(x=>`<div class="change-card"><div class="change-card-label">${x[0]}</div><div class="change-card-num">${x[1]}</div></div>`).join('');
   if(!filtered.length){ wrap.innerHTML = '<div class="placeholder-msg">No hay cambios pendientes de revisión.</div>'; return; }
-  const rows = filtered.sort((a,b)=>(b.changeAt||b.updatedAt||0)-(a.changeAt||a.updatedAt||0)).map(g => `<tr><td>${statusBadge(g)}</td><td><b>${esc(g.cliente)} · ${esc(g.anunciante)}</b><br><span>#${esc(g.campana)} — ${esc(g.articulo)}</span></td><td>${esc(g.espacio||'—')}</td><td>${esc(g.creatividadId || (g.creatividadIds||[]).join(', ') || '—')}</td><td>${fmtDate(g.start)} a ${fmtDate(g.end)}</td><td>${diffHtml(g) || '—'}</td><td>${g.changeAt ? fmtDate(g.changeAt) : '—'}<br><span class="checklist-updated">${esc(g.changeBy||'')}</span></td><td><button class="btn-secondary" onclick="acknowledgeChange('${esc(g.id)}')">Revisado</button></td></tr>`).join('');
+  const rows = filtered.sort((a,b)=>(b.changeAt||b.updatedAt||0)-(a.changeAt||a.updatedAt||0)).map(g => `<tr><td>${statusBadge(g)}</td><td><b>${esc(chainLabel(g.cadena))} · ${esc(g.cliente)} · ${esc(g.anunciante)}</b><br><span>#${esc(g.campana)} — ${esc(g.articulo)}</span></td><td>${esc(g.espacio||'—')}</td><td>${esc(g.creatividadId || (g.creatividadIds||[]).join(', ') || '—')}</td><td>${fmtDate(g.start)} a ${fmtDate(g.end)}</td><td>${diffHtml(g) || '—'}</td><td>${g.changeAt ? fmtDate(g.changeAt) : '—'}<br><span class="checklist-updated">${esc(g.changeBy||'')}</span></td><td><button class="btn-secondary" onclick="acknowledgeChange('${esc(g.id)}')">Revisado</button></td></tr>`).join('');
   wrap.innerHTML = `<table class="specs-table audit-table"><thead><tr><th class="h-dark">Tipo</th><th class="h-dark">Cliente / Campaña</th><th class="h-dark">Espacio</th><th class="h-dark">Creatividad ID</th><th class="h-blue">Fechas</th><th class="h-blue">Detalle</th><th class="h-blue">Detectado</th><th class="h-green">Acción</th></tr></thead><tbody>${rows}</tbody></table>`;
 }
 function renderHistory(){
   const wrap = document.getElementById('historyWrap'); if(!wrap) return;
   const q = (document.getElementById('historySearch')?.value || '').trim().toLowerCase();
   const stFilter = document.getElementById('historyStatusFilter')?.value || 'all';
-  let rowsData = mapChecklistDocs().filter(g => isEnded(g.end));
+  let rowsData = mapChecklistDocs().filter(matchesSelectedChainDoc).filter(g => ['pautado','finished_complete','finished_missing'].includes(operationalStatus(g).key));
+  if(stFilter === 'pautado') rowsData = rowsData.filter(g => operationalStatus(g).key === 'pautado');
   if(stFilter === 'complete') rowsData = rowsData.filter(g => operationalStatus(g).key === 'finished_complete');
   if(stFilter === 'missing') rowsData = rowsData.filter(g => operationalStatus(g).key === 'finished_missing');
   if(q) rowsData = rowsData.filter(g => searchableText(g).includes(q));
   if(!rowsData.length){ wrap.innerHTML = '<div class="placeholder-msg">Sin resultados en histórico.</div>'; return; }
-  const rows = rowsData.sort((a,b)=>(b.end||0)-(a.end||0)).map(g => `<tr><td>${statusBadge(g)}</td><td><b>${esc(g.cliente)} · ${esc(g.anunciante)}</b><br><span>#${esc(g.campana)} — ${esc(g.articulo)}</span></td><td>${esc(g.espacio||'—')}</td><td>${esc(g.creatividadId || (g.creatividadIds||[]).join(', ') || '—')}</td><td>${fmtDate(g.start)}</td><td>${fmtDate(g.end)}</td><td>${checksProgress(g.checks).done}/${CHECK_FIELDS.length}</td><td>${esc(missingChecksText(g.checks))}</td><td>${esc(g.updatedBy||g.changeBy||'—')}</td></tr>`).join('');
+  const rows = rowsData.sort((a,b)=>(b.end||0)-(a.end||0)).map(g => `<tr><td>${statusBadge(g)}</td><td><b>${esc(chainLabel(g.cadena))} · ${esc(g.cliente)} · ${esc(g.anunciante)}</b><br><span>#${esc(g.campana)} — ${esc(g.articulo)}</span></td><td>${esc(g.espacio||'—')}</td><td>${esc(g.creatividadId || (g.creatividadIds||[]).join(', ') || '—')}</td><td>${fmtDate(g.start)}</td><td>${fmtDate(g.end)}</td><td>${checksProgress(g.checks).done}/${CHECK_FIELDS.length}</td><td>${esc(missingChecksText(g.checks))}</td><td>${esc(g.updatedBy||g.changeBy||'—')}</td></tr>`).join('');
   wrap.innerHTML = `<table class="specs-table audit-table"><thead><tr><th class="h-dark">Estado</th><th class="h-dark">Cliente / Campaña</th><th class="h-dark">Espacio</th><th class="h-dark">Creatividad ID</th><th class="h-blue">Fijación</th><th class="h-blue">Retirada</th><th class="h-green">Avance</th><th class="h-green">Faltantes</th><th class="h-green">Último usuario</th></tr></thead><tbody>${rows}</tbody></table>`;
 }
 function renderOperationalKpis(){
   const el = document.getElementById('opsKpiCards'); if(!el) return;
-  const docs = mapChecklistDocs();
+  const docs = mapChecklistDocs().filter(matchesSelectedChainDoc);
   if(!docs.length){ el.style.display='none'; return; }
-  const counts = {active:0, changes:0, finishedOk:0, finishedMissing:0, absent:0, compliance:0};
-  docs.forEach(g => { const st = operationalStatus(g).key; if(st==='active'||st==='new') counts.active++; if(st==='change') counts.changes++; if(st==='finished_complete') counts.finishedOk++; if(st==='finished_missing') counts.finishedMissing++; if(st==='absent') counts.absent++; });
+  const counts = {active:0, pautado:0, changes:0, finishedOk:0, finishedMissing:0, absent:0, compliance:0};
+  docs.forEach(g => {
+    const st = operationalStatus(g).key;
+    if(st==='active'||st==='new') counts.active++;
+    if(st==='pautado') counts.pautado++;
+    if(st==='change') counts.changes++;
+    if(st==='finished_complete') counts.finishedOk++;
+    if(st==='finished_missing') counts.finishedMissing++;
+    if(st==='absent') counts.absent++;
+  });
   const finished = counts.finishedOk + counts.finishedMissing; counts.compliance = finished ? Math.round((counts.finishedOk/finished)*100) : 0;
   el.style.display='grid';
-  el.innerHTML = `<div class="ops-kpi-card"><div class="ops-kpi-label">Activas vivas</div><div class="ops-kpi-val">${counts.active}</div><div class="ops-kpi-hint">requieren seguimiento</div></div><div class="ops-kpi-card"><div class="ops-kpi-label">Cambios</div><div class="ops-kpi-val">${counts.changes}</div><div class="ops-kpi-hint">por revisar</div></div><div class="ops-kpi-card"><div class="ops-kpi-label">Finalizadas OK</div><div class="ops-kpi-val">${counts.finishedOk}</div><div class="ops-kpi-hint">cierre completo</div></div><div class="ops-kpi-card"><div class="ops-kpi-label">Finalizadas con faltantes</div><div class="ops-kpi-val">${counts.finishedMissing}</div><div class="ops-kpi-hint">afectan KPI</div></div><div class="ops-kpi-card"><div class="ops-kpi-label">No incluidas</div><div class="ops-kpi-val">${counts.absent}</div><div class="ops-kpi-hint">solo cargas completas/rango</div></div><div class="ops-kpi-card"><div class="ops-kpi-label">Cumplimiento</div><div class="ops-kpi-val">${counts.compliance}%</div><div class="ops-kpi-hint">sobre finalizadas</div></div>`;
+  el.innerHTML = `<div class="ops-kpi-card"><div class="ops-kpi-label">Activas vivas</div><div class="ops-kpi-val">${counts.active}</div><div class="ops-kpi-hint">requieren seguimiento</div></div><div class="ops-kpi-card"><div class="ops-kpi-label">Pautado actualmente</div><div class="ops-kpi-val">${counts.pautado}</div><div class="ops-kpi-hint">completas en pauta</div></div><div class="ops-kpi-card"><div class="ops-kpi-label">Cambios</div><div class="ops-kpi-val">${counts.changes}</div><div class="ops-kpi-hint">por revisar</div></div><div class="ops-kpi-card"><div class="ops-kpi-label">Finalizadas OK</div><div class="ops-kpi-val">${counts.finishedOk}</div><div class="ops-kpi-hint">cierre completo</div></div><div class="ops-kpi-card"><div class="ops-kpi-label">Finalizadas con faltantes</div><div class="ops-kpi-val">${counts.finishedMissing}</div><div class="ops-kpi-hint">afectan KPI</div></div><div class="ops-kpi-card"><div class="ops-kpi-label">No incluidas</div><div class="ops-kpi-val">${counts.absent}</div><div class="ops-kpi-hint">solo cargas completas/rango</div></div><div class="ops-kpi-card"><div class="ops-kpi-label">Cumplimiento</div><div class="ops-kpi-val">${counts.compliance}%</div><div class="ops-kpi-hint">sobre finalizadas</div></div>`;
 }
 
 
 (function restoreSavedMode(){
   const prefs = loadFilterPrefs();
+  if(prefs && prefs.chainFilter){ chainFilter = prefs.chainFilter; const chainSel = document.getElementById('chainFilterSelect'); if(chainSel) chainSel.value = chainFilter; }
   if(prefs && prefs.mode && (prefs.mode === 'consolidated' || prefs.mode === 'weekly')){
     currentMode = prefs.mode;
     document.getElementById('btnModeConsolidated').classList.toggle('active', currentMode==='consolidated');
     document.getElementById('btnModeWeekly').classList.toggle('active', currentMode==='weekly');
     document.getElementById('modeHint').textContent = currentMode === 'consolidated'
-      ? 'Vista consolidada: une periodos sin mezclar Creatividad ID; cada ID se gestiona como un arte independiente.'
+      ? 'Vista consolidada: une periodos sin mezclar Cadena ni Creatividad ID; cada ID se gestiona como un arte independiente.'
       : 'Vista semanal: conserva cada periodo del archivo para operar por semana sin perder trazabilidad.';
   }
 })();
